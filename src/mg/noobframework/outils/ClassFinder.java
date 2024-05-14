@@ -29,16 +29,4 @@ public class ClassFinder {
         }
         return classes;
     }
-
-    public static void main(String[] args) {
-        try {
-            ArrayList<Class<?>> classes = getController("mg");
-            for (Class<?> clazz : classes) {
-                System.out.println(clazz.getSimpleName());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
 }
