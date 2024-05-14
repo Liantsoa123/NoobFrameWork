@@ -4,8 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import mg.noobframework.annotation.Controller;
+
 public class ClassFinder {
-    public static ArrayList<Class<?>> getClasses(String packageName) throws ClassNotFoundException, IOException {
+    public static ArrayList<Class<?>> getController(String packageName) throws ClassNotFoundException, IOException {
         ArrayList<Class<?>> classes = new ArrayList<>();
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         String path = packageName.replace('.', '/');
@@ -14,26 +16,23 @@ public class ClassFinder {
 
         for (File file : packageDir.listFiles()) {
             if (file.isDirectory()) {
-                classes.addAll(getClasses(packageName + "." + file.getName()));
+                classes.addAll(getController(packageName + "." + file.getName()));
             } else {
+
                 String className = packageName + "." + file.getName().substring(0, file.getName().length() - 6);
-                classes.add(Class.forName(className));
+                // Controller controller =
+                Class<?> class1 = Class.forName(className);
+                if (class1.getDeclaredAnnotation(Controller.class) != null) {
+                    classes.add(class1);
+                }
             }
         }
         return classes;
     }
 
-    public static ArrayList<Class<?>> getController(String packageName) throws Exception {
-        ArrayList<Class<?>> listController = new ArrayList<Class<?>>();
-        
-
-
-        return listController;
-    }
-
     public static void main(String[] args) {
         try {
-            ArrayList<Class<?>> classes = getClasses("mg");
+            ArrayList<Class<?>> classes = getController("mg");
             for (Class<?> clazz : classes) {
                 System.out.println(clazz.getSimpleName());
             }
