@@ -26,3 +26,5 @@ replay_pid*
 .vscode/
 lib/
 bin/
+
+buildCopy.bat

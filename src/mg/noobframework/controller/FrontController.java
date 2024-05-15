@@ -18,8 +18,13 @@ public class FrontController extends HttpServlet {
         out.println("<h1>Noob_FrameWork</h1>");
         out.println("<p>Votre url = " + req.getRequestURI() + "</p>");
         out.println("huhu");
-        for (Class<?> class1 : listController) {
-            out.println("<p>" + class1.getSimpleName() + "</p>");
+        try {
+            String packageName = this.getInitParameter("package-controller");
+            out.println("packagesName"+packageName);
+            listController = ClassFinder.getController(packageName);
+
+        } catch (Exception e) {
+            out.println(e.getMessage());
         }
 
     }
@@ -27,7 +32,6 @@ public class FrontController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         processRequest(req, resp);
-
     }
 
     @Override
@@ -35,13 +39,14 @@ public class FrontController extends HttpServlet {
         processRequest(req, resp);
     }
 
-    @Override
-    public void init() throws ServletException {
-        try {
-            String path = getServletContext().getRealPath("WEB-INF\\classes");
-            listController = ClassFinder.getController(path);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+    // @Override
+    // public void init() throws ServletException {
+    //     try {
+    //         String packageName = this.getInitParameter("package-controller");
+    //         listController = ClassFinder.getController(packageName);
+    //     } catch (Exception e) {
+    //         e.printStackTrace();
+    //     }
+    // }
+
 }

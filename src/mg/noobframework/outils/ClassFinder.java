@@ -10,11 +10,10 @@ public class ClassFinder {
     public static ArrayList<Class<?>> getController(String packageName) throws ClassNotFoundException, IOException {
         ArrayList<Class<?>> classes = new ArrayList<>();
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-
         String path = packageName.replace('.', '/');
 
         File packageDir = new File(classLoader.getResource(path).getFile().replace("%20", " "));
-
+        System.out.println(packageDir.getAbsolutePath());
         for (File file : packageDir.listFiles()) {
             if (file.isDirectory()) {
                 classes.addAll(getController(packageName + "." + file.getName()));
@@ -23,7 +22,7 @@ public class ClassFinder {
                 String className = packageName + "." + file.getName().substring(0, file.getName().length() - 6);
                 Class<?> class1 = Class.forName(className);
                 // check if it's controller
-                if (class1.getDeclaredAnnotation(Controller.class) != null) {
+                if (class1.isAnnotationPresent(Controller.class)) {
                     classes.add(class1);
                 }
             }
@@ -33,11 +32,8 @@ public class ClassFinder {
 
     public static void main(String[] args) {
         try {
-            ArrayList<Class<?>> list = getController("mg");
+            ArrayList<Class<?>> classes = getController("mg.noobframework");
 
-            for (Class<?> class1 : list) {
-                System.out.println(class1.getSimpleName());
-            }
         } catch (Exception e) {
             e.printStackTrace();
         }

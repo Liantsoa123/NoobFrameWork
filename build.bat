@@ -13,9 +13,9 @@ if not exist "%BIN_DIR%" mkdir "%BIN_DIR%"
 if not exist "%TMP_DIR%" mkdir "%TMP_DIR%"
 
 :: Copy only .java files from src to tmp
-for /R "%SRC_DIR%" %%f in (*.java) do (
-    xcopy "%%f" "%TMP_DIR%" /I
-)
+    for /R "%SRC_DIR%" %%f in (*.java) do (
+        xcopy "%%f" "%TMP_DIR%" /I
+    )
 
 :: Compile the code
 cd "%TMP_DIR%"
