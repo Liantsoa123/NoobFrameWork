@@ -8,6 +8,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import mg.noobframework.annotation.Controller;
 import mg.noobframework.outils.ClassFinder;
 
 public class FrontController extends HttpServlet {
@@ -17,7 +18,7 @@ public class FrontController extends HttpServlet {
     private void initvariable(PrintWriter out) {
         try {
             String packageName = this.getInitParameter("controller_dir");
-            listController = ClassFinder.getController(packageName);
+            listController = ClassFinder.getAllClassAnnotation(packageName, Controller.class);
         } catch (Exception e) {
             if (out != null) {
                 out.println("<p>" + e.getMessage() + "</p>");
@@ -59,7 +60,7 @@ public class FrontController extends HttpServlet {
     @Override
     public void init() throws ServletException {
         initvariable(null);
-        ischecked = true ;
+        ischecked = true;
     }
 
 }
