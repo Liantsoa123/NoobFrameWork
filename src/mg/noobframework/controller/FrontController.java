@@ -19,7 +19,11 @@ public class FrontController extends HttpServlet {
             String packageName = this.getInitParameter("controller_dir");
             listController = ClassFinder.getController(packageName);
         } catch (Exception e) {
-            out.println("<p>" + e.getMessage() + "</p>");
+            if (out != null) {
+                out.println("<p>" + e.getMessage() + "</p>");
+            } else {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -30,7 +34,7 @@ public class FrontController extends HttpServlet {
 
         if (!ischecked) {
             initvariable(out);
-            ischecked = true ;
+            ischecked = true;
         }
         try {
             out.println("<h3>Listes Controller</h3>");
@@ -54,7 +58,8 @@ public class FrontController extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-
+        initvariable(null);
+        ischecked = true ;
     }
 
 }
