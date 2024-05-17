@@ -7,7 +7,8 @@ import java.util.ArrayList;
 import mg.noobframework.annotation.Controller;
 
 public class ClassFinder {
-    public static ArrayList<Class<?>> getController(String packageName) throws ClassNotFoundException, IOException {
+    public static ArrayList<Class<?>> getController(String packageName)
+            throws ClassNotFoundException, IOException {
         ArrayList<Class<?>> classes = new ArrayList<>();
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         String path = packageName.replace('.', '/');
@@ -28,14 +29,5 @@ public class ClassFinder {
             }
         }
         return classes;
-    }
-
-    public static void main(String[] args) {
-        try {
-            ArrayList<Class<?>> classes = getController("mg.noobframework");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }

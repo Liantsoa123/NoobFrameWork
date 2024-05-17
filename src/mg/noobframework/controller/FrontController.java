@@ -17,11 +17,11 @@ public class FrontController extends HttpServlet {
         PrintWriter out = resp.getWriter();
         out.println("<h1>Noob_FrameWork</h1>");
         out.println("<p>Votre url = " + req.getRequestURI() + "</p>");
-        out.println("huhu");
         try {
-            String packageName = this.getInitParameter("package-controller");
-            out.println("packagesName"+packageName);
-            listController = ClassFinder.getController(packageName);
+            out.println("<h3>Listes Controller</h3>");
+            for (Class<?> clas : listController) {
+                out.println("<li>" + clas.getSimpleName() + "</li>");
+            }
 
         } catch (Exception e) {
             out.println(e.getMessage());
@@ -39,14 +39,14 @@ public class FrontController extends HttpServlet {
         processRequest(req, resp);
     }
 
-    // @Override
-    // public void init() throws ServletException {
-    //     try {
-    //         String packageName = this.getInitParameter("package-controller");
-    //         listController = ClassFinder.getController(packageName);
-    //     } catch (Exception e) {
-    //         e.printStackTrace();
-    //     }
-    // }
+    @Override
+    public void init() throws ServletException {
+        try {
+            String packageName = this.getInitParameter("controller_dir");
+            listController = ClassFinder.getController(packageName);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }
