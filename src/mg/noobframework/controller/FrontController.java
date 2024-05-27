@@ -2,15 +2,12 @@ package mg.noobframework.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import mg.noobframework.annotation.Controller;
-import mg.noobframework.outils.ClassFinder;
 import mg.noobframework.outils.Mapping;
 
 public class FrontController extends HttpServlet {
@@ -24,7 +21,7 @@ public class FrontController extends HttpServlet {
         out.println("<h1>Noob_FrameWork</h1>");
         out.println("<p>Votre url = " + req.getRequestURI() + "</p>");
 
-        
+
     }
 
     @Override
@@ -39,8 +36,7 @@ public class FrontController extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        initvariable(null);
-        ischecked = true;
+        
     }
 
 }
