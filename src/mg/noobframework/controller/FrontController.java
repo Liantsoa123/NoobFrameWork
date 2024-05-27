@@ -3,6 +3,7 @@ package mg.noobframework.controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -10,41 +11,20 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import mg.noobframework.annotation.Controller;
 import mg.noobframework.outils.ClassFinder;
+import mg.noobframework.outils.Mapping;
 
 public class FrontController extends HttpServlet {
-    private ArrayList<Class<?>> listController;
-    private boolean ischecked = false;
+    private HashMap < String , Mapping > listeMethodes ;
+    
 
-    private void initvariable(PrintWriter out) {
-        try {
-            String packageName = this.getInitParameter("controller_dir");
-            listController = ClassFinder.getAllClassAnnotation(packageName, Controller.class);
-        } catch (Exception e) {
-            if (out != null) {
-                out.println("<p>" + e.getMessage() + "</p>");
-            } else {
-                e.printStackTrace();
-            }
-        }
-    }
+    
 
     public void processRequest(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         PrintWriter out = resp.getWriter();
         out.println("<h1>Noob_FrameWork</h1>");
         out.println("<p>Votre url = " + req.getRequestURI() + "</p>");
 
-        if (!ischecked) {
-            initvariable(out);
-            ischecked = true;
-        }
-        try {
-            out.println("<h3>Listes Controller</h3>");
-            for (Class<?> clas : listController) {
-                out.println("<li>" + clas.getSimpleName() + "</li>");
-            }
-        } catch (Exception e) {
-            out.println(e.getMessage());
-        }
+        
     }
 
     @Override
