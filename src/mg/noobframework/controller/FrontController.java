@@ -25,7 +25,7 @@ public class FrontController extends HttpServlet {
             out.println("<p>Class= " + listeMethodes.get(url).getClassName() + "</p>");
             out.println("<p>Method= " + listeMethodes.get(url).getMethodName() + "</p>");
         } else {
-            out.println("There is no method associated with this path");
+            out.println("There is no method associated with this url");
         }
     }
 
