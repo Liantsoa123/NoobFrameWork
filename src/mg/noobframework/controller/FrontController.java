@@ -12,20 +12,26 @@ import jakarta.servlet.http.HttpServletResponse;
 import mg.noobframework.annotation.Controller;
 import mg.noobframework.outils.ClassFinder;
 import mg.noobframework.outils.Mapping;
+import mg.noobframework.outils.MethodUtils;
 
 public class FrontController extends HttpServlet {
     private HashMap<String, Mapping> listeMethodes;
 
     public void processRequest(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         PrintWriter out = resp.getWriter();
-        String url = req.getRequestURI().replace("/NoobFrameWork", "");
-        out.println("<h1>Noob_FrameWork</h1>");
-        out.println("<p>Votre url = " + url + "</p>");
-        if (listeMethodes.get(url) != null) {
-            out.println("<p>Class= " + listeMethodes.get(url).getClassName() + "</p>");
-            out.println("<p>Method= " + listeMethodes.get(url).getMethodName() + "</p>");
-        } else {
-            out.println("There is no method associated with this url");
+        try {
+            String url = req.getRequestURI().replace("/NoobFrameWork", "");
+            out.println("<h1>Noob_FrameWork</h1>");
+            out.println("<p>Votre url = " + url + "</p>");
+            if (listeMethodes.get(url) != null) {
+                out.println("<p>Class= " + listeMethodes.get(url).getClassName() + "</p>");
+                out.println("<p>Method= " + listeMethodes.get(url).getMethodName() + "</p>");
+                out.println("<p>ExecutMethod= " + MethodUtils.executMethod(listeMethodes.get(url)));
+            } else {
+                out.println("There is no method associated with this url");
+            }
+        } catch (Exception e) {
+            out.println(e.getMessage());
         }
     }
 
