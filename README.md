@@ -11,4 +11,4 @@
        * url-pattern: dispacherServlets
 2. **Controller**:
    * Add : put annotation ("@Controller")
-   *
+   * Method : Add annotation Get("/url")
