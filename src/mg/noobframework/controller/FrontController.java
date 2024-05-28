@@ -18,7 +18,7 @@ public class FrontController extends HttpServlet {
 
     public void processRequest(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         PrintWriter out = resp.getWriter();
-        String url = req.getRequestURI().replace("/NoobFramwork", "");
+        String url = req.getRequestURI().replace("/NoobFrameWork", "");
         out.println("<h1>Noob_FrameWork</h1>");
         out.println("<p>Votre url = " + url + "</p>");
         if (listeMethodes.get(url) != null) {
