@@ -1,4 +1,4 @@
-package mg.noobframework.outils;
+package mg.noobframework.utils;
 
 public class Mapping {
     public Mapping() {

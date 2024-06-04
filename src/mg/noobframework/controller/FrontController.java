@@ -10,9 +10,9 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import mg.noobframework.annotation.Controller;
-import mg.noobframework.outils.ClassFinder;
-import mg.noobframework.outils.Mapping;
-import mg.noobframework.outils.MethodUtils;
+import mg.noobframework.utils.ClassFinder;
+import mg.noobframework.utils.Mapping;
+import mg.noobframework.utils.MethodUtils;
 
 public class FrontController extends HttpServlet {
     private HashMap<String, Mapping> listeMethodes;
@@ -26,8 +26,10 @@ public class FrontController extends HttpServlet {
             if (listeMethodes.get(url) != null) {
                 out.println("<p>Class= " + listeMethodes.get(url).getClassName() + "</p>");
                 out.println("<p>Method= " + listeMethodes.get(url).getMethodName() + "</p>");
-                out.println("<p>ExecutMethod= " + MethodUtils.executMethod(listeMethodes.get(url)));
+
+                MethodUtils.doMethod(req, resp, listeMethodes.get(url), out);
             } else {
+
                 out.println("There is no method associated with this url");
             }
         } catch (Exception e) {

@@ -1,4 +1,4 @@
-package mg.noobframework.outils;
+package mg.noobframework.utils;
 
 import java.io.File;
 import java.io.IOException;
