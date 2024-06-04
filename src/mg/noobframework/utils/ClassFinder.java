@@ -27,7 +27,7 @@ public class ClassFinder {
                 // check if it's controller
                 if (class1.isAnnotationPresent(annotation)) {
                     classes.add(class1);
-                }
+                } 
             }
         }
         return classes;
