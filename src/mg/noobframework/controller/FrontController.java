@@ -10,9 +10,9 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import mg.noobframework.annotation.Controller;
-import mg.noobframework.outils.ClassFinder;
-import mg.noobframework.outils.Mapping;
-import mg.noobframework.outils.MethodUtils;
+import mg.noobframework.utils.ClassFinder;
+import mg.noobframework.utils.Mapping;
+import mg.noobframework.utils.MethodUtils;
 
 public class FrontController extends HttpServlet {
     private HashMap<String, Mapping> listeMethodes;

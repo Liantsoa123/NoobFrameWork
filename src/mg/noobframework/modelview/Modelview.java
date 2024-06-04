@@ -2,7 +2,7 @@ package mg.noobframework.modelview;
 
 import java.util.HashMap;
 
-public class Mview {
+public class Modelview {
 
     private String url;
     private HashMap<String, Object> data;
@@ -23,12 +23,13 @@ public class Mview {
         this.url = url;
     }
 
-    public Mview(String url, HashMap<String, Object> data) {
+    public Modelview(String url, HashMap<String, Object> data) {
         this.setData(data);
         this.setUrl(url);
     }
 
-    public Mview() {
+    public Modelview() {
+        
     }
 
     public void add(String key, Object values) {
