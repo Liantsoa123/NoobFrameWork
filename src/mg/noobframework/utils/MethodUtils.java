@@ -3,8 +3,6 @@ package mg.noobframework.utils;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.Set;
-
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -31,8 +29,9 @@ public class MethodUtils {
             }
             RequestDispatcher rDispatcher = request.getRequestDispatcher(modelview.getUrl());
             rDispatcher.forward(request, response);
+
         } else {
-            pWriter.println("non reconnu");
+            pWriter.println("unknown value");
         }
     }
 }

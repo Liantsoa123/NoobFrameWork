@@ -26,8 +26,10 @@ public class FrontController extends HttpServlet {
             if (listeMethodes.get(url) != null) {
                 out.println("<p>Class= " + listeMethodes.get(url).getClassName() + "</p>");
                 out.println("<p>Method= " + listeMethodes.get(url).getMethodName() + "</p>");
-                out.println("<p>ExecutMethod= " + MethodUtils.executMethod(listeMethodes.get(url)));
+
+                MethodUtils.doMethod(req, resp, listeMethodes.get(url), out);
             } else {
+
                 out.println("There is no method associated with this url");
             }
         } catch (Exception e) {
