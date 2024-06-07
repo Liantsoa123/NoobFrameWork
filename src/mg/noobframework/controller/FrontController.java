@@ -35,8 +35,8 @@ public class FrontController extends HttpServlet {
 
                     MethodUtils.doMethod(req, resp, listeMethodes.get(url), out);
                 } else {
-
-                    out.println("There is no method associated with this url");
+                    
+                    // out.println("There is no method associated with this url");
                 }
             } catch (Exception e) {
                 out.println(e.getMessage());
