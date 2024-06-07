@@ -16,24 +16,31 @@ import mg.noobframework.utils.MethodUtils;
 
 public class FrontController extends HttpServlet {
     private HashMap<String, Mapping> listeMethodes;
+    private ArrayList<Exception> listException = new ArrayList<Exception>();
 
     public void processRequest(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         PrintWriter out = resp.getWriter();
-        try {
-            String url = req.getRequestURI().replace("/NoobFrameWork", "");
-            out.println("<h1>Noob_FrameWork</h1>");
-            out.println("<p>Votre url = " + url + "</p>");
-            if (listeMethodes.get(url) != null) {
-                out.println("<p>Class= " + listeMethodes.get(url).getClassName() + "</p>");
-                out.println("<p>Method= " + listeMethodes.get(url).getMethodName() + "</p>");
-
-                MethodUtils.doMethod(req, resp, listeMethodes.get(url), out);
-            } else {
-
-                out.println("There is no method associated with this url");
+        if (listException.size() > 0) {
+            for (Exception exception : listException) {
+                out.println("<p>" + exception.getMessage() + "</p>");
             }
-        } catch (Exception e) {
-            out.println(e.getMessage());
+        } else {
+            try {
+                String url = req.getRequestURI().replace("/NoobFrameWork", "");
+                out.println("<h1>Noob_FrameWork</h1>");
+                out.println("<p>Votre url = " + url + "</p>");
+                if (listeMethodes.get(url) != null) {
+                    out.println("<p>Class= " + listeMethodes.get(url).getClassName() + "</p>");
+                    out.println("<p>Method= " + listeMethodes.get(url).getMethodName() + "</p>");
+
+                    MethodUtils.doMethod(req, resp, listeMethodes.get(url), out);
+                } else {
+
+                    out.println("There is no method associated with this url");
+                }
+            } catch (Exception e) {
+                out.println(e.getMessage());
+            }
         }
     }
 
@@ -54,7 +61,7 @@ public class FrontController extends HttpServlet {
             ArrayList<Class<?>> controller = ClassFinder.getAllClassAnnotation(packageName, Controller.class);
             listeMethodes = ClassFinder.getMethod(controller);
         } catch (Exception e) {
-            e.printStackTrace();
+            listException.add(e);
         }
     }
 
