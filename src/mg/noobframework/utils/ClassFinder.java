@@ -42,8 +42,7 @@ public class ClassFinder {
                 if (method.isAnnotationPresent(Get.class)) {
                     String url = method.getAnnotation(Get.class).value();
                     if (values.get(url) != null) {
-                        throw new UrlDuplicateException("url already exist in class \'" + class1.getName()
-                                + "\' methode \'" + method.getName() + "\'");
+                        throw new UrlDuplicateException("url duplicate");
                     } else {
                         values.put(url, new Mapping(class1.getName(), method.getName()));
                     }
