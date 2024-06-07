@@ -27,8 +27,7 @@ public class MethodUtils {
             for (String key : data.keySet()) {
                 request.setAttribute(key, data.get(key));
             }
-            RequestDispatcher rDispatcher = request.getRequestDispatcher(modelview.getUrl());
-            rDispatcher.forward(request, response);
+            Redirecte.redirecting(request, response, modelview.getUrl());
 
         } else {
             pWriter.println("unknown value");
