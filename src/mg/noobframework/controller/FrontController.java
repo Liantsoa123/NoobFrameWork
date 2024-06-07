@@ -16,15 +16,13 @@ import mg.noobframework.utils.MethodUtils;
 
 public class FrontController extends HttpServlet {
     private HashMap<String, Mapping> listeMethodes;
-    private ArrayList<Exception> listException = new ArrayList<>() ;
+    private Exception exception;
 
     public void processRequest(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         PrintWriter out = resp.getWriter();
-        if (listException.size() > 0) {
-            for (Exception exception : listException) {
-                out.println("<p>" + exception.getMessage() + "</p>");
-                resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, exception.getMessage());
-            }
+        if (exception != null) {
+            out.println("<p>" + exception.getMessage() + "</p>");
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, exception.getMessage());
             return;
         }
         try {
@@ -41,7 +39,7 @@ public class FrontController extends HttpServlet {
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Url not Found");
             }
         } catch (Exception e) {
-            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR , e.getMessage());
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 
@@ -58,8 +56,8 @@ public class FrontController extends HttpServlet {
     @Override
     public void init() throws ServletException {
         String packageName = this.getInitParameter("controller_dir");
-        if ( packageName ==null ) {
-            listException.add(new Exception("controller_dir is null"));
+        if (packageName == null) {
+            exception = new Exception("controller_dir is null");
             return;
         }
         try {
@@ -67,7 +65,7 @@ public class FrontController extends HttpServlet {
             listeMethodes = ClassFinder.getMethod(controller);
 
         } catch (Exception e) {
-            listException.add(e);
+            exception = e;
         }
     }
 
