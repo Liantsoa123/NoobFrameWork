@@ -8,10 +8,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import mg.noobframework.annotation.Get;
+import mg.noobframework.exception.UrlDuplicateException;
 
 public class ClassFinder {
     public static ArrayList<Class<?>> getAllClassAnnotation(String packageName, Class<? extends Annotation> annotation)
-            throws ClassNotFoundException, IOException {
+            throws ClassNotFoundException, IOException, Exception {
+        if (packageName.isBlank()) {
+            throw new Exception("controller_dir is empty");
+        }
         ArrayList<Class<?>> classes = new ArrayList<>();
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         String path = packageName.replace('.', '/');
@@ -33,14 +37,18 @@ public class ClassFinder {
         return classes;
     }
 
-    public static HashMap<String, Mapping> getMethod(ArrayList<Class<?>> controller) {
+    public static HashMap<String, Mapping> getMethod(ArrayList<Class<?>> controller) throws UrlDuplicateException {
         HashMap<String, Mapping> values = new HashMap<String, Mapping>();
         for (Class<?> class1 : controller) {
             Method[] methods = class1.getMethods();
             for (Method method : methods) {
                 if (method.isAnnotationPresent(Get.class)) {
                     String url = method.getAnnotation(Get.class).value();
-                    values.put(url, new Mapping(class1.getName(), method.getName()));
+                    if (values.get(url) != null) {
+                        throw new UrlDuplicateException("url duplicate");
+                    } else {
+                        values.put(url, new Mapping(class1.getName(), method.getName()));
+                    }
                 }
             }
         }

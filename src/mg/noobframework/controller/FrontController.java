@@ -16,9 +16,15 @@ import mg.noobframework.utils.MethodUtils;
 
 public class FrontController extends HttpServlet {
     private HashMap<String, Mapping> listeMethodes;
+    private Exception exception;
 
     public void processRequest(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         PrintWriter out = resp.getWriter();
+        if (exception != null) {
+            out.println("<p>" + exception.getMessage() + "</p>");
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, exception.getMessage());
+            return;
+        }
         try {
             String url = req.getRequestURI().replace("/NoobFrameWork", "");
             out.println("<h1>Noob_FrameWork</h1>");
@@ -30,10 +36,10 @@ public class FrontController extends HttpServlet {
                 MethodUtils.doMethod(req, resp, listeMethodes.get(url), out);
             } else {
 
-                out.println("There is no method associated with this url");
+                resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Url not Found");
             }
         } catch (Exception e) {
-            out.println(e.getMessage());
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 
@@ -50,11 +56,16 @@ public class FrontController extends HttpServlet {
     @Override
     public void init() throws ServletException {
         String packageName = this.getInitParameter("controller_dir");
+        if (packageName == null) {
+            exception = new Exception("controller_dir is null");
+            return;
+        }
         try {
             ArrayList<Class<?>> controller = ClassFinder.getAllClassAnnotation(packageName, Controller.class);
             listeMethodes = ClassFinder.getMethod(controller);
+
         } catch (Exception e) {
-            e.printStackTrace();
+            exception = e;
         }
     }
 
