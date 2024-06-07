@@ -41,7 +41,7 @@ public class FrontController extends HttpServlet {
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Url not Found");
             }
         } catch (Exception e) {
-            out.println(e.getMessage());
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR , e.getMessage());
         }
     }
 

@@ -30,7 +30,7 @@ public class MethodUtils {
             Redirecte.redirecting(request, response, modelview.getUrl());
 
         } else {
-            pWriter.println("unknown value");
+            throw new Exception("unknown value");
         }
     }
 }
