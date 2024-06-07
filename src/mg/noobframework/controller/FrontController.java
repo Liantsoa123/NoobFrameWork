@@ -16,7 +16,7 @@ import mg.noobframework.utils.MethodUtils;
 
 public class FrontController extends HttpServlet {
     private HashMap<String, Mapping> listeMethodes;
-    private ArrayList<Exception> listException = new ArrayList<Exception>();
+    private ArrayList<Exception> listException = new ArrayList<>() ;
 
     public void processRequest(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         PrintWriter out = resp.getWriter();
@@ -58,9 +58,14 @@ public class FrontController extends HttpServlet {
     @Override
     public void init() throws ServletException {
         String packageName = this.getInitParameter("controller_dir");
+        if ( packageName ==null ) {
+            listException.add(new Exception("controller_dir is null"));
+            return;
+        }
         try {
             ArrayList<Class<?>> controller = ClassFinder.getAllClassAnnotation(packageName, Controller.class);
             listeMethodes = ClassFinder.getMethod(controller);
+
         } catch (Exception e) {
             listException.add(e);
         }

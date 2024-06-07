@@ -12,7 +12,10 @@ import mg.noobframework.exception.UrlDuplicateException;
 
 public class ClassFinder {
     public static ArrayList<Class<?>> getAllClassAnnotation(String packageName, Class<? extends Annotation> annotation)
-            throws ClassNotFoundException, IOException {
+            throws ClassNotFoundException, IOException, Exception {
+        if (packageName.isBlank()) {
+            throw new Exception("controller_dir is empty");
+        }
         ArrayList<Class<?>> classes = new ArrayList<>();
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         String path = packageName.replace('.', '/');
