@@ -9,7 +9,6 @@ import java.util.HashMap;
 
 import mg.noobframework.annotation.Get;
 import mg.noobframework.exception.UrlDuplicateException;
-
 public class ClassFinder {
     public static ArrayList<Class<?>> getAllClassAnnotation(String packageName, Class<? extends Annotation> annotation)
             throws ClassNotFoundException, IOException, Exception {
@@ -33,6 +32,7 @@ public class ClassFinder {
                     classes.add(class1);
                 }
             }
+            
         }
         return classes;
     }
