@@ -36,22 +36,14 @@ public class FrontController extends HttpServlet {
                 out.println("<p>Class= " + listeMethodes.get(url).getClazzMapping().getName() + "</p>");
                 out.println("<p>Method= " + listeMethodes.get(url).getMethodMapping().getName() + "</p>");
 
-                // MethodUtils.doMethod(req, resp, listeMethodes.get(url), out);
-                Mapping mapping = listeMethodes.get(url);
-                Class<?> clazz = mapping.getClazzMapping();
-                Object obj = clazz.getConstructor().newInstance();
-                Method method = mapping.getMethodMapping();
-                List<Object> lsitObj = MethodUtils.getParamValue(method, req);
-                for (Object object : lsitObj) {
-                    out.println(object);
-                }
+                MethodUtils.doMethod(req, resp, listeMethodes.get(url), out);
+
             } else {
 
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Url not Found");
             }
         } catch (Exception e) {
-            // resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-            e.printStackTrace(resp.getWriter());
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 
