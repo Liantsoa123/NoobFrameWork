@@ -1,30 +1,33 @@
 package mg.noobframework.utils;
 
+import java.lang.reflect.Method;
+
 public class Mapping {
     public Mapping() {
     }
 
-    public Mapping(String className, String methodName) {
-        this.setClassName(className);
-        this.setMethodName(methodName);
+    private Class<?> clazzMapping;
+    private Method methodMapping;
+
+    public Mapping(Class<?> clazzMapping, Method methodMapping) {
+        this.setClazzMapping(clazzMapping);
+        this.setMethodMapping(methodMapping);
     }
 
-    private String className, methodName;
-
-    public String getClassName() {
-        return className;
+    public Class<?> getClazzMapping() {
+        return clazzMapping;
     }
 
-    public void setClassName(String className) {
-        this.className = className;
+    public void setClazzMapping(Class<?> clazzMapping) {
+        this.clazzMapping = clazzMapping;
     }
 
-    public String getMethodName() {
-        return methodName;
+    public Method getMethodMapping() {
+        return methodMapping;
     }
 
-    public void setMethodName(String methodName) {
-        this.methodName = methodName;
+    public void setMethodMapping(Method methodMapping) {
+        this.methodMapping = methodMapping;
     }
 
 }

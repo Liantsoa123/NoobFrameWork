@@ -2,8 +2,11 @@ package mg.noobframework.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -33,13 +36,22 @@ public class FrontController extends HttpServlet {
                 out.println("<p>Class= " + listeMethodes.get(url).getClassName() + "</p>");
                 out.println("<p>Method= " + listeMethodes.get(url).getMethodName() + "</p>");
 
-                MethodUtils.doMethod(req, resp, listeMethodes.get(url), out);
+                // MethodUtils.doMethod(req, resp, listeMethodes.get(url), out);
+                Mapping mapping = listeMethodes.get(url);
+                Class<?> clazz = Class.forName(mapping.getClassName());
+                Object obj = clazz.getConstructor().newInstance();
+                Method method = clazz.getMethod(mapping.getMethodName());
+                List<Object> lsitObj = MethodUtils.getParamValue(method, req);
+                for (Object object : lsitObj) {
+                    out.println(object);
+                }
             } else {
 
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Url not Found");
             }
         } catch (Exception e) {
-            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+            // resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+            e.printStackTrace(resp.getWriter());
         }
     }
 
