@@ -2,8 +2,11 @@ package mg.noobframework.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -30,10 +33,11 @@ public class FrontController extends HttpServlet {
             out.println("<h1>Noob_FrameWork</h1>");
             out.println("<p>Votre url = " + url + "</p>");
             if (listeMethodes.get(url) != null) {
-                out.println("<p>Class= " + listeMethodes.get(url).getClassName() + "</p>");
-                out.println("<p>Method= " + listeMethodes.get(url).getMethodName() + "</p>");
+                out.println("<p>Class= " + listeMethodes.get(url).getClazzMapping().getName() + "</p>");
+                out.println("<p>Method= " + listeMethodes.get(url).getMethodMapping().getName() + "</p>");
 
                 MethodUtils.doMethod(req, resp, listeMethodes.get(url), out);
+
             } else {
 
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Url not Found");

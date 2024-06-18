@@ -33,6 +33,7 @@ public class ClassFinder {
                     classes.add(class1);
                 }
             }
+
         }
         return classes;
     }
@@ -47,7 +48,7 @@ public class ClassFinder {
                     if (values.get(url) != null) {
                         throw new UrlDuplicateException("url duplicate");
                     } else {
-                        values.put(url, new Mapping(class1.getName(), method.getName()));
+                        values.put(url, new Mapping(class1, method));
                     }
                 }
             }
