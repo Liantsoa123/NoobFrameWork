@@ -29,9 +29,9 @@ public class MethodUtils {
     }
 
     public static Object executMethod(Mapping mapping, HttpServletRequest request) throws Exception {
-        Class<?> clazz = Class.forName(mapping.getClassName());
+        Class<?> clazz = mapping.getClazzMapping();
         Object obj = clazz.getConstructor().newInstance();
-        Method method = clazz.getMethod(mapping.getMethodName());
+        Method method = mapping.getMethodMapping();
         List<Object> paramValue = getParamValue(method, request);
         return method.invoke(obj, paramValue.toArray());
     }

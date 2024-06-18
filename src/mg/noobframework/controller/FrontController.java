@@ -33,14 +33,14 @@ public class FrontController extends HttpServlet {
             out.println("<h1>Noob_FrameWork</h1>");
             out.println("<p>Votre url = " + url + "</p>");
             if (listeMethodes.get(url) != null) {
-                out.println("<p>Class= " + listeMethodes.get(url).getClassName() + "</p>");
-                out.println("<p>Method= " + listeMethodes.get(url).getMethodName() + "</p>");
+                out.println("<p>Class= " + listeMethodes.get(url).getClazzMapping().getName() + "</p>");
+                out.println("<p>Method= " + listeMethodes.get(url).getMethodMapping().getName() + "</p>");
 
                 // MethodUtils.doMethod(req, resp, listeMethodes.get(url), out);
                 Mapping mapping = listeMethodes.get(url);
-                Class<?> clazz = Class.forName(mapping.getClassName());
+                Class<?> clazz = mapping.getClazzMapping();
                 Object obj = clazz.getConstructor().newInstance();
-                Method method = clazz.getMethod(mapping.getMethodName());
+                Method method = mapping.getMethodMapping();
                 List<Object> lsitObj = MethodUtils.getParamValue(method, req);
                 for (Object object : lsitObj) {
                     out.println(object);
