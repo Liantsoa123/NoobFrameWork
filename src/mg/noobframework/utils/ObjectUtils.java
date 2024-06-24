@@ -11,16 +11,15 @@ public class ObjectUtils {
         Field[] fields = clazz.getDeclaredFields();
 
         for (Field field : fields) {
-            String paramName = field.getName();
-            String paramValue = request.getParameter(paramName);
-
+            String fieldName = field.getName();
+            String paramValue = request.getParameter(fieldName);
             if (paramValue != null) {
-                String setterName = "set" + StringUtils.toUppurcaseFirstLetter(field.getName());
-                Method setterMethod = clazz.getDeclaredMethod(setterName, field.getType());
-
-                Object convertedValue = convertValue(paramValue, field.getType());
-
-                setterMethod.invoke(obj, convertedValue);
+                Object parmaObject = convertValue(paramValue, field.getType());
+                String setterName = "set" + StringUtils.toUppurcaseFirstLetter(fieldName);
+                Method method = clazz.getDeclaredMethod(setterName, field.getType());
+                method.invoke(obj, parmaObject);
+            } else {
+                obj = null;
             }
         }
         return obj;

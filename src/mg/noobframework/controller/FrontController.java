@@ -2,12 +2,11 @@ package mg.noobframework.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,6 +15,8 @@ import mg.noobframework.annotation.Controller;
 import mg.noobframework.utils.ClassFinder;
 import mg.noobframework.utils.Mapping;
 import mg.noobframework.utils.MethodUtils;
+import mg.noobframework.utils.ObjectUtils;
+import mg.noobframework.utils.StringUtils;
 
 public class FrontController extends HttpServlet {
     private HashMap<String, Mapping> listeMethodes;
@@ -24,8 +25,10 @@ public class FrontController extends HttpServlet {
     public void processRequest(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         PrintWriter out = resp.getWriter();
         if (exception != null) {
-            out.println("<p>" + exception.getMessage() + "</p>");
-            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, exception.getMessage());
+            // out.println("<p>" + exception.getMessage() + "</p>");
+            // resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+            // exception.getMessage());
+            exception.printStackTrace(out);
             return;
         }
         try {
@@ -37,13 +40,19 @@ public class FrontController extends HttpServlet {
                 out.println("<p>Method= " + listeMethodes.get(url).getMethodMapping().getName() + "</p>");
 
                 MethodUtils.doMethod(req, resp, listeMethodes.get(url), out);
+                // Method method = listeMethodes.get(url).getMethodMapping();
+                // Parameter[] parameters = method.getParameters();
+                // for (Parameter parameter : parameters) {
+                // out.println( parameter.getType() );
+                // }
 
             } else {
 
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Url not Found");
             }
         } catch (Exception e) {
-            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+            // resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+            e.printStackTrace(out);
         }
     }
 

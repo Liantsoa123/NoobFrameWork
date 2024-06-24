@@ -28,14 +28,15 @@ public class MethodUtils {
         return listValue;
     }
 
-    public static Object getParamValue(Mapping mapping, HttpServletRequest request)
+    public static List<Object> getParamValue(Mapping mapping, HttpServletRequest request)
             throws Exception {
-        Object obj = new Object();
+        List<Object> listObjects = new ArrayList<>();
         Parameter[] parameters = mapping.getMethodMapping().getParameters();
         for (Parameter parameter : parameters) {
+            Object obj = new Object();
             String parameteString = parameter.getType().getName();
             if (parameteString.contains(".")) {
-                obj = ObjectUtils.doSetter(mapping.getClazzMapping(), request);
+                obj = ObjectUtils.doSetter(parameter.getType(), request);
             } else {
                 if (parameter.isAnnotationPresent(RequestParam.class)) {
                     obj = request.getParameter(parameter.getAnnotation(RequestParam.class).value());
@@ -43,15 +44,16 @@ public class MethodUtils {
                     obj = request.getParameter(parameter.getName());
                 }
             }
+            listObjects.add(obj);
         }
-        return obj;
+        return listObjects;
     }
 
     public static Object executMethod(Mapping mapping, HttpServletRequest request) throws Exception {
         Class<?> clazz = mapping.getClazzMapping();
         Object obj = clazz.getConstructor().newInstance();
         Method method = mapping.getMethodMapping();
-        List<Object> paramValue = getParamValue(method, request);
+        List<Object> paramValue = getParamValue(mapping, request);
         return method.invoke(obj, paramValue.toArray());
     }
 
