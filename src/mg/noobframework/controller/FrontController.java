@@ -40,11 +40,6 @@ public class FrontController extends HttpServlet {
                 out.println("<p>Method= " + listeMethodes.get(url).getMethodMapping().getName() + "</p>");
 
                 MethodUtils.doMethod(req, resp, listeMethodes.get(url), out);
-                // Method method = listeMethodes.get(url).getMethodMapping();
-                // Parameter[] parameters = method.getParameters();
-                // for (Parameter parameter : parameters) {
-                // out.println( parameter.getType() );
-                // }
 
             } else {
 
