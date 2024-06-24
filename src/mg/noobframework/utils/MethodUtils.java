@@ -35,8 +35,13 @@ public class MethodUtils {
         for (Parameter parameter : parameters) {
             String parameteString = parameter.getType().getName();
             if (parameteString.contains(".")) {
-                obj = parameter.getClass().getConstructor().newInstance();
-                
+                obj = ObjectUtils.doSetter(mapping.getClazzMapping(), request);
+            } else {
+                if (parameter.isAnnotationPresent(RequestParam.class)) {
+                    obj = request.getParameter(parameter.getAnnotation(RequestParam.class).value());
+                } else {
+                    obj = request.getParameter(parameter.getName());
+                }
             }
         }
         return obj;

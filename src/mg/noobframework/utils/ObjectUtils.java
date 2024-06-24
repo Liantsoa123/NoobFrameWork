@@ -23,7 +23,6 @@ public class ObjectUtils {
                 setterMethod.invoke(obj, convertedValue);
             }
         }
-
         return obj;
     }
 
