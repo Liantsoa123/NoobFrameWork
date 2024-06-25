@@ -24,6 +24,7 @@ public class FrontController extends HttpServlet {
 
     public void processRequest(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         PrintWriter out = resp.getWriter();
+        resp.setContentType("text/html");
         if (exception != null) {
             // out.println("<p>" + exception.getMessage() + "</p>");
             // resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
@@ -33,11 +34,13 @@ public class FrontController extends HttpServlet {
         }
         try {
             String url = req.getRequestURI().replace("/NoobFrameWork", "");
-            out.println("<h1>Noob_FrameWork</h1>");
-            out.println("<p>Votre url = " + url + "</p>");
+            // out.println("<h1>Noob_FrameWork</h1>");
+            // out.println("<p>Votre url = " + url + "</p>");
             if (listeMethodes.get(url) != null) {
-                out.println("<p>Class= " + listeMethodes.get(url).getClazzMapping().getName() + "</p>");
-                out.println("<p>Method= " + listeMethodes.get(url).getMethodMapping().getName() + "</p>");
+                // out.println("<p>Class= " + listeMethodes.get(url).getClazzMapping().getName()
+                // + "</p>");
+                // out.println("<p>Method= " +
+                // listeMethodes.get(url).getMethodMapping().getName() + "</p>");
 
                 MethodUtils.doMethod(req, resp, listeMethodes.get(url), out);
 
@@ -47,7 +50,7 @@ public class FrontController extends HttpServlet {
             }
         } catch (Exception e) {
             // resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-            e.printStackTrace(out);
+            out.println(e.getMessage());
         }
     }
 
