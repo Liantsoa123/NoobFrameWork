@@ -10,6 +10,7 @@ import java.util.List;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import mg.noobframework.annotation.RequestParam;
+import mg.noobframework.annotation.RequestParamObject;
 import mg.noobframework.modelview.Modelview;
 
 public class MethodUtils {
@@ -23,29 +24,27 @@ public class MethodUtils {
                 listValue.add(request.getParameter(paramName));
             } else {
                 // listValue.add("");
-                throw new Exception("ETU002510 = tsy misy annotation ");
+                throw new Exception(
+                        "ETU002510  there is no annotation in the parameter of the function You want to use ");
             }
         }
         return listValue;
     }
 
-    
     public static List<Object> getParamValue(Mapping mapping, HttpServletRequest request)
             throws Exception {
         List<Object> listObjects = new ArrayList<>();
         Parameter[] parameters = mapping.getMethodMapping().getParameters();
         for (Parameter parameter : parameters) {
             Object obj = new Object();
-            String parameteString = parameter.getType().getName();
-            if (parameteString.contains(".")) {
+            if (parameter.isAnnotationPresent(RequestParamObject.class)) {
                 obj = ObjectUtils.doSetter(parameter.getType(), request);
-
             } else {
                 if (parameter.isAnnotationPresent(RequestParam.class)) {
                     obj = request.getParameter(parameter.getAnnotation(RequestParam.class).value());
                 } else {
-                    // obj = request.getParameter(parameter.getName());
-                    throw new Exception("ETU002510 = tsy misy annotation ");
+                    throw new Exception(
+                            "ETU002510  there is no annotation in the parameter of the function You want to use ");
                 }
             }
             listObjects.add(obj);
@@ -53,11 +52,17 @@ public class MethodUtils {
         return listObjects;
     }
 
+    public static List<Object> getParamVaue(Mapping mapping, HttpServletRequest request) {
+        List<Object> listObjects = new ArrayList<>();
+
+        return listObjects;
+    }
+
     public static Object executMethod(Mapping mapping, HttpServletRequest request) throws Exception {
         Class<?> clazz = mapping.getClazzMapping();
         Object obj = clazz.getConstructor().newInstance();
         Method method = mapping.getMethodMapping();
-        List<Object> paramValue = getParamValue(method, request);
+        List<Object> paramValue = getParamValue(mapping, request);
         return method.invoke(obj, paramValue.toArray());
     }
 
