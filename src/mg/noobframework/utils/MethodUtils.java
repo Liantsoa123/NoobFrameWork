@@ -32,9 +32,8 @@ public class MethodUtils {
         return listValue;
     }
 
-    public static List<Object> getParamValue(Mapping mapping, HttpServletRequest request)
-            throws Exception {
-        List<Object> listObjects = new ArrayList<>();
+    public static List<Object> getParamValues(Mapping mapping, HttpServletRequest request) throws Exception {
+        List<Object> listObject = new ArrayList<>();
         Parameter[] parameters = mapping.getMethodMapping().getParameters();
         for (Parameter parameter : parameters) {
             Object obj = new Object();
@@ -44,20 +43,22 @@ public class MethodUtils {
                 obj = request.getParameter(parameter.getAnnotation(RequestParam.class).value());
             } else if (parameter.getClass().equals(Mysession.class)) {
                 obj = new Mysession(request.getSession());
-            } else {
+            } else if (!parameter.getClass().equals(Mysession.class)
+                    && !parameter.isAnnotationPresent(RequestParam.class)
+                    && !parameter.isAnnotationPresent(RequestParamObject.class)) {
                 throw new Exception(
-                        "ETU002510  there is no annotation in the parameter of the function You want to use ");
+                        "ETU002510  there is no annotation in the parameter of the function You want to use");
             }
-            listObjects.add(obj);
+            listObject.add(obj);
         }
-        return listObjects;
+        return listObject;
     }
 
     public static Object executMethod(Mapping mapping, HttpServletRequest request) throws Exception {
         Class<?> clazz = mapping.getClazzMapping();
         Object obj = clazz.getConstructor().newInstance();
         Method method = mapping.getMethodMapping();
-        List<Object> paramValue = getParamValue(mapping, request);
+        List<Object> paramValue = getParamValues(mapping, request);
         return method.invoke(obj, paramValue.toArray());
     }
 
