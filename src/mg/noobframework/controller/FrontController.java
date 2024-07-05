@@ -21,26 +21,14 @@ public class FrontController extends HttpServlet {
         PrintWriter out = resp.getWriter();
         resp.setContentType("text/html");
         if (exception != null) {
-            // out.println("<p>" + exception.getMessage() + "</p>");
-            // resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-            // exception.getMessage());
             exception.printStackTrace(out);
             return;
         }
         try {
             String url = req.getRequestURI().replace("/NoobFrameWork", "");
-            // out.println("<h1>Noob_FrameWork</h1>");
-            // out.println("<p>Votre url = " + url + "</p>");
             if (listeMethodes.get(url) != null) {
-                // out.println("<p>Class= " + listeMethodes.get(url).getClazzMapping().getName()
-                // + "</p>");
-                // out.println("<p>Method= " +
-                // listeMethodes.get(url).getMethodMapping().getName() + "</p>");
-
                 MethodUtils.doMethod(req, resp, listeMethodes.get(url), out);
-
             } else {
-
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Url not Found");
             }
         } catch (Exception e) {

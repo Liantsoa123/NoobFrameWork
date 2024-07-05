@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import mg.noobframework.annotation.RequestParam;
 import mg.noobframework.annotation.RequestParamObject;
 import mg.noobframework.modelview.Modelview;
+import mg.noobframework.session.Mysession;
 
 public class MethodUtils {
     public static List<Object> getParamValue(Method method, HttpServletRequest request) throws Exception {
@@ -39,22 +40,16 @@ public class MethodUtils {
             Object obj = new Object();
             if (parameter.isAnnotationPresent(RequestParamObject.class)) {
                 obj = ObjectUtils.doSetter(parameter.getType(), request);
+            } else if (parameter.isAnnotationPresent(RequestParam.class)) {
+                obj = request.getParameter(parameter.getAnnotation(RequestParam.class).value());
+            } else if (parameter.getClass().equals(Mysession.class)) {
+                obj = new Mysession(request.getSession());
             } else {
-                if (parameter.isAnnotationPresent(RequestParam.class)) {
-                    obj = request.getParameter(parameter.getAnnotation(RequestParam.class).value());
-                } else {
-                    throw new Exception(
-                            "ETU002510  there is no annotation in the parameter of the function You want to use ");
-                }
+                throw new Exception(
+                        "ETU002510  there is no annotation in the parameter of the function You want to use ");
             }
             listObjects.add(obj);
         }
-        return listObjects;
-    }
-
-    public static List<Object> getParamVaue(Mapping mapping, HttpServletRequest request) {
-        List<Object> listObjects = new ArrayList<>();
-
         return listObjects;
     }
 
