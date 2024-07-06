@@ -26,7 +26,7 @@ public class MethodUtils {
             } else {
                 // listValue.add("");
                 throw new Exception(
-                        "ETU002510  there is no annotation in the parameter of the function You want to use ");
+                        "ETU002510  annotation not found ");
             }
         }
         return listValue;
@@ -35,23 +35,25 @@ public class MethodUtils {
     public static List<Object> getParamValues(Mapping mapping, HttpServletRequest request) throws Exception {
         List<Object> listObject = new ArrayList<>();
         Parameter[] parameters = mapping.getMethodMapping().getParameters();
+
         for (Parameter parameter : parameters) {
-            Object obj = new Object();
-            if (parameter.isAnnotationPresent(RequestParamObject.class)) {
+            Object obj = null;
+            // check session
+            if (parameter.getType().equals(Mysession.class)) {
+                obj = new Mysession(request.getSession());
+            } else if (parameter.isAnnotationPresent(RequestParamObject.class)) {
                 obj = ObjectUtils.doSetter(parameter.getType(), request);
             } else if (parameter.isAnnotationPresent(RequestParam.class)) {
                 obj = request.getParameter(parameter.getAnnotation(RequestParam.class).value());
-            } else if (parameter.getClass().equals(Mysession.class)) {
-                obj = new Mysession(request.getSession());
-            } else if (!parameter.getClass().equals(Mysession.class)
-                    && !parameter.isAnnotationPresent(RequestParam.class)
-                    && !parameter.isAnnotationPresent(RequestParamObject.class)) {
-                throw new Exception(
-                        "ETU002510  there is no annotation in the parameter of the function You want to use");
+            } else {
+                throw new Exception("ETU002510: No valid annotation found for the parameter '"
+                        + parameter.getName() + "' of type '" + parameter.getType()
+                        + "' in the function you want to use");
             }
             listObject.add(obj);
         }
         return listObject;
+
     }
 
     public static Object executMethod(Mapping mapping, HttpServletRequest request) throws Exception {
