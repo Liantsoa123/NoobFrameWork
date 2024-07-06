@@ -10,7 +10,9 @@ import java.util.List;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import mg.noobframework.annotation.RequestParam;
+import mg.noobframework.annotation.RequestParamObject;
 import mg.noobframework.modelview.Modelview;
+import mg.noobframework.session.Mysession;
 
 public class MethodUtils {
     public static List<Object> getParamValue(Method method, HttpServletRequest request) throws Exception {
@@ -23,40 +25,42 @@ public class MethodUtils {
                 listValue.add(request.getParameter(paramName));
             } else {
                 // listValue.add("");
-                throw new Exception("ETU002510 = tsy misy annotation ");
+                throw new Exception(
+                        "ETU002510  annotation not found ");
             }
         }
         return listValue;
     }
 
-    public static List<Object> getParamValue(Mapping mapping, HttpServletRequest request)
-            throws Exception {
-        List<Object> listObjects = new ArrayList<>();
+    public static List<Object> getParamValues(Mapping mapping, HttpServletRequest request) throws Exception {
+        List<Object> listObject = new ArrayList<>();
         Parameter[] parameters = mapping.getMethodMapping().getParameters();
-        for (Parameter parameter : parameters) {
-            Object obj = new Object();
-            String parameteString = parameter.getType().getName();
-            if (parameteString.contains(".")) {
-                obj = ObjectUtils.doSetter(parameter.getType(), request);
 
+        for (Parameter parameter : parameters) {
+            Object obj = null;
+            // check session
+            if (parameter.getType().equals(Mysession.class)) {
+                obj = new Mysession(request.getSession());
+            } else if (parameter.isAnnotationPresent(RequestParamObject.class)) {
+                obj = ObjectUtils.doSetter(parameter.getType(), request);
+            } else if (parameter.isAnnotationPresent(RequestParam.class)) {
+                obj = request.getParameter(parameter.getAnnotation(RequestParam.class).value());
             } else {
-                if (parameter.isAnnotationPresent(RequestParam.class)) {
-                    obj = request.getParameter(parameter.getAnnotation(RequestParam.class).value());
-                } else {
-                    // obj = request.getParameter(parameter.getName());
-                    throw new Exception("ETU002510 = tsy misy annotation ");
-                }
+                throw new Exception("ETU002510: No valid annotation found for the parameter '"
+                        + parameter.getName() + "' of type '" + parameter.getType()
+                        + "' in the function you want to use");
             }
-            listObjects.add(obj);
+            listObject.add(obj);
         }
-        return listObjects;
+        return listObject;
+
     }
 
     public static Object executMethod(Mapping mapping, HttpServletRequest request) throws Exception {
         Class<?> clazz = mapping.getClazzMapping();
         Object obj = clazz.getConstructor().newInstance();
         Method method = mapping.getMethodMapping();
-        List<Object> paramValue = getParamValue(method, request);
+        List<Object> paramValue = getParamValues(mapping, request);
         return method.invoke(obj, paramValue.toArray());
     }
 

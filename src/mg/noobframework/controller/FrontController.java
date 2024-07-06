@@ -2,9 +2,6 @@ package mg.noobframework.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import jakarta.servlet.ServletException;
@@ -15,8 +12,6 @@ import mg.noobframework.annotation.Controller;
 import mg.noobframework.utils.ClassFinder;
 import mg.noobframework.utils.Mapping;
 import mg.noobframework.utils.MethodUtils;
-import mg.noobframework.utils.ObjectUtils;
-import mg.noobframework.utils.StringUtils;
 
 public class FrontController extends HttpServlet {
     private HashMap<String, Mapping> listeMethodes;
@@ -26,26 +21,14 @@ public class FrontController extends HttpServlet {
         PrintWriter out = resp.getWriter();
         resp.setContentType("text/html");
         if (exception != null) {
-            // out.println("<p>" + exception.getMessage() + "</p>");
-            // resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-            // exception.getMessage());
             exception.printStackTrace(out);
             return;
         }
         try {
             String url = req.getRequestURI().replace("/NoobFrameWork", "");
-            // out.println("<h1>Noob_FrameWork</h1>");
-            // out.println("<p>Votre url = " + url + "</p>");
             if (listeMethodes.get(url) != null) {
-                // out.println("<p>Class= " + listeMethodes.get(url).getClazzMapping().getName()
-                // + "</p>");
-                // out.println("<p>Method= " +
-                // listeMethodes.get(url).getMethodMapping().getName() + "</p>");
-
                 MethodUtils.doMethod(req, resp, listeMethodes.get(url), out);
-
             } else {
-
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Url not Found");
             }
         } catch (Exception e) {
