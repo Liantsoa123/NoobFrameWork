@@ -1,6 +1,7 @@
 package mg.noobframework.utils;
 
 import java.io.PrintWriter;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
@@ -59,6 +60,7 @@ public class MethodUtils {
     public static Object executMethod(Mapping mapping, HttpServletRequest request) throws Exception {
         Class<?> clazz = mapping.getClazzMapping();
         Object obj = clazz.getConstructor().newInstance();
+        setSessionAttribut(obj, request);
         Method method = mapping.getMethodMapping();
         List<Object> paramValue = getParamValues(mapping, request);
         return method.invoke(obj, paramValue.toArray());
@@ -82,4 +84,14 @@ public class MethodUtils {
         }
     }
 
+    public static void setSessionAttribut(Object object, HttpServletRequest request) throws Exception {
+
+        Field[] fields = object.getClass().getDeclaredFields();
+        for (Field field : fields) {
+            if (field.getType().equals(Mysession.class)) {
+                Method seMethod = ObjectUtils.getSetterMethod(object.getClass(), field);
+                seMethod.invoke(object, new Mysession(request.getSession()));
+            }
+        }
+    }
 }
