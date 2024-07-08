@@ -15,14 +15,21 @@ public class ObjectUtils {
             String paramValue = request.getParameter(fieldName);
             if (paramValue != null) {
                 Object parmaObject = convertValue(paramValue, field.getType());
-                String setterName = "set" + StringUtils.toUppurcaseFirstLetter(fieldName);
-                Method method = clazz.getDeclaredMethod(setterName, field.getType());
+                // String setterName = "set" + StringUtils.toUppurcaseFirstLetter(fieldName);
+                Method method = getSetterMethod(clazz, field);
                 method.invoke(obj, parmaObject);
             } else {
                 obj = null;
             }
         }
         return obj;
+    }
+
+    public static Method getSetterMethod(Class<?> clazz, Field field) throws Exception {
+        String fieldName = field.getName();
+        String setterName = "set" + StringUtils.toUppurcaseFirstLetter(fieldName);
+        Method setMethod = clazz.getDeclaredMethod(setterName, field.getType());
+        return setMethod;
     }
 
     public static Object convertValue(String value, Class<?> targetType) {
