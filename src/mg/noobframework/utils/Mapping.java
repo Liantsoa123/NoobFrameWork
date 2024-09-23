@@ -2,6 +2,8 @@ package mg.noobframework.utils;
 
 import java.lang.reflect.Method;
 
+import mg.noobframework.annotation.RestApi;
+
 public class Mapping {
     public Mapping() {
     }
@@ -28,6 +30,10 @@ public class Mapping {
 
     public void setMethodMapping(Method methodMapping) {
         this.methodMapping = methodMapping;
+    }
+
+    public boolean isRestApi() {
+        return this.getMethodMapping().isAnnotationPresent(RestApi.class);
     }
 
 }
