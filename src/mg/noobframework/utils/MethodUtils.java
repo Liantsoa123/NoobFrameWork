@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.google.gson.Gson;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import mg.noobframework.annotation.RequestParam;
@@ -70,15 +72,19 @@ public class MethodUtils {
             PrintWriter pWriter) throws Exception {
         Object result = executMethod(mapping, request);
         if (result instanceof String) {
-            pWriter.println("<p>" + result + "</p>");
+            // pWriter.println("<p>" + result + "</p>");
+            pWriter.println(new Gson().toJson(result));
         } else if (result instanceof Modelview) {
             Modelview modelview = (Modelview) result;
             HashMap<String, Object> data = modelview.getData();
-            for (String key : data.keySet()) {
-                request.setAttribute(key, data.get(key));
+            if (mapping.isRestApi()) {
+                pWriter.println(new Gson().toJson(data));
+            } else {
+                for (String key : data.keySet()) {
+                    request.setAttribute(key, data.get(key));
+                }
+                Redirecte.redirecting(request, response, modelview.getUrl());
             }
-            Redirecte.redirecting(request, response, modelview.getUrl());
-
         } else {
             throw new Exception("unknown value");
         }
