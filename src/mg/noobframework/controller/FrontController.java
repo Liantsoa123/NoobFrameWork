@@ -19,7 +19,7 @@ public class FrontController extends HttpServlet {
 
     public void processRequest(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         PrintWriter out = resp.getWriter();
-        resp.setContentType("text/html");
+        resp.setContentType("text/json");
         if (exception != null) {
             exception.printStackTrace(out);
             return;
