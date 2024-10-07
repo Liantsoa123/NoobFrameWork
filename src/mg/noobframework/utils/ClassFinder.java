@@ -3,15 +3,14 @@ package mg.noobframework.utils;
 import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import jakarta.servlet.http.HttpServletRequest;
 import mg.noobframework.annotation.Get;
+import mg.noobframework.annotation.Post;
+import mg.noobframework.annotation.Url;
 import mg.noobframework.exception.UrlDuplicateException;
-import mg.noobframework.session.Mysession;
 
 public class ClassFinder {
     public static ArrayList<Class<?>> getAllClassAnnotation(String packageName, Class<? extends Annotation> annotation)
@@ -46,12 +45,30 @@ public class ClassFinder {
         for (Class<?> class1 : controller) {
             Method[] methods = class1.getMethods();
             for (Method method : methods) {
-                if (method.isAnnotationPresent(Get.class)) {
-                    String url = method.getAnnotation(Get.class).value();
-                    if (values.get(url) != null) {
-                        throw new UrlDuplicateException("url duplicate");
+                if (method.isAnnotationPresent(Url.class)) {
+                    String url = method.getAnnotation(Url.class).value();
+                    Mapping mapping = new Mapping();
+                    VerbAction verbAction = new VerbAction();
+                    verbAction.setAction(method);
+
+                    // Check verb
+                    if (method.isAnnotationPresent(Get.class)) {
+                        verbAction.setVerb("GET");
+                    } else if (method.isAnnotationPresent(Post.class)) {
+                        verbAction.setVerb("POST");
+                    }
+
+                    // Check if url already exist
+                    if (values.get(url) != null && values.get(url).getClass().equals(class1)) {
+                        if (values.get(url).getVerbAction().contains(verbAction)) {
+                            throw new UrlDuplicateException("Url " + url + " already exist");
+                        } else {
+                            values.get(url).getVerbAction().add(verbAction);
+                        }
                     } else {
-                        values.put(url, new Mapping(class1, method));
+                        mapping.setClazzMapping(class1);
+                        mapping.getVerbAction().add(verbAction);
+                        values.put(url, mapping);
                     }
                 }
             }
