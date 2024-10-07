@@ -1,19 +1,19 @@
 package mg.noobframework.utils;
 
+import java.util.List;
+import java.util.ArrayList;
 import java.lang.reflect.Method;
-
-import mg.noobframework.annotation.RestApi;
 
 public class Mapping {
     public Mapping() {
     }
 
     private Class<?> clazzMapping;
-    private Method methodMapping;
+    private List<VerbAction> verbAction = new ArrayList<>();
 
-    public Mapping(Class<?> clazzMapping, Method methodMapping) {
+    public Mapping(Class<?> clazzMapping, List<VerbAction> verbAction) {
         this.setClazzMapping(clazzMapping);
-        this.setMethodMapping(methodMapping);
+        this.setVerbAction(verbAction);
     }
 
     public Class<?> getClazzMapping() {
@@ -24,16 +24,25 @@ public class Mapping {
         this.clazzMapping = clazzMapping;
     }
 
-    public Method getMethodMapping() {
-        return methodMapping;
+    public List<VerbAction> getVerbAction() {
+        return verbAction;
     }
 
-    public void setMethodMapping(Method methodMapping) {
-        this.methodMapping = methodMapping;
+    public void setVerbAction(List<VerbAction> verbAction) {
+        this.verbAction = verbAction;
     }
 
-    public boolean isRestApi() {
-        return this.getMethodMapping().isAnnotationPresent(RestApi.class);
+    public Method getMethodMapping(String verb) throws Exception {
+        Method action = null;
+        for (VerbAction verbAction : verbAction) {
+            if (verbAction.getVerb().equals(verb)) {
+                action = verbAction.getAction();
+            }
+        }
+        if (action == null) {
+            throw new Exception("No action found for the method " + verb + " with the class " + clazzMapping.getName());
+        } else {
+            return action;
+        }
     }
-
 }
