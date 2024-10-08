@@ -17,7 +17,7 @@ public class FrontController extends HttpServlet {
     private HashMap<String, Mapping> listeMethodes;
     private Exception exception;
 
-    public void processRequest(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+    public void processRequest(HttpServletRequest req, HttpServletResponse resp , String verb) throws IOException, ServletException {
         PrintWriter out = resp.getWriter();
         resp.setContentType("text/json");
         if (exception != null) {
@@ -27,7 +27,7 @@ public class FrontController extends HttpServlet {
         try {
             String url = req.getRequestURI().replace("/NoobFrameWork", "");
             if (listeMethodes.get(url) != null) {
-                MethodUtils.doMethod(req, resp, listeMethodes.get(url), out);
+                MethodUtils.doMethod(req, resp, listeMethodes.get(url), out , verb);
             } else {
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Url not Found");
             }
@@ -39,12 +39,14 @@ public class FrontController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        processRequest(req, resp);
+        String verb = "GET";
+        processRequest(req, resp , verb);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        processRequest(req, resp);
+        String verb = "POST";
+        processRequest(req, resp , verb);
     }
 
     @Override
