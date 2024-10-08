@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import mg.noobframework.annotation.RequestParam;
 import mg.noobframework.annotation.RequestParamObject;
+import mg.noobframework.annotation.RestApi;
 import mg.noobframework.modelview.Modelview;
 import mg.noobframework.session.Mysession;
 
@@ -35,9 +36,9 @@ public class MethodUtils {
         return listValue;
     }
 
-    public static List<Object> getParamValues(Mapping mapping, HttpServletRequest request) throws Exception {
+    public static List<Object> getParamValues(Mapping mapping, HttpServletRequest request , String verb) throws Exception {
         List<Object> listObject = new ArrayList<>();
-        Parameter[] parameters = mapping.getMethodMapping().getParameters();
+        Parameter[] parameters = mapping.getMethodMapping(verb).getParameters();
 
         for (Parameter parameter : parameters) {
             Object obj = null;
@@ -59,25 +60,25 @@ public class MethodUtils {
 
     }
 
-    public static Object executMethod(Mapping mapping, HttpServletRequest request) throws Exception {
+    public static Object executMethod(Mapping mapping, HttpServletRequest request , String verb) throws Exception {
         Class<?> clazz = mapping.getClazzMapping();
         Object obj = clazz.getConstructor().newInstance();
         setSessionAttribut(obj, request);
-        Method method = mapping.getMethodMapping();
-        List<Object> paramValue = getParamValues(mapping, request);
+        Method method = mapping.getMethodMapping(verb);
+        List<Object> paramValue = getParamValues(mapping, request ,verb);
         return method.invoke(obj, paramValue.toArray());
     }
 
     public static void doMethod(HttpServletRequest request, HttpServletResponse response, Mapping mapping,
-            PrintWriter pWriter) throws Exception {
-        Object result = executMethod(mapping, request);
+            PrintWriter pWriter , String verb) throws Exception {
+        Object result = executMethod(mapping, request , verb );
         if (result instanceof String) {
             // pWriter.println("<p>" + result + "</p>");
             pWriter.println(new Gson().toJson(result));
         } else if (result instanceof Modelview) {
             Modelview modelview = (Modelview) result;
             HashMap<String, Object> data = modelview.getData();
-            if (mapping.isRestApi()) {
+            if (mapping.getMethodMapping(verb).isAnnotationPresent(RestApi.class)) {
                 pWriter.println(new Gson().toJson(data));
             } else {
                 for (String key : data.keySet()) {
