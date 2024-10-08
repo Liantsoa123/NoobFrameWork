@@ -45,4 +45,13 @@ public class Mapping {
             return action;
         }
     }
+
+    public boolean is_already_exist(String verb) {
+        for (VerbAction verbAction : verbAction) {
+            if (verbAction.getVerb().equalsIgnoreCase(verb)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

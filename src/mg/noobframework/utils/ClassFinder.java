@@ -40,7 +40,7 @@ public class ClassFinder {
         return classes;
     }
 
-    public static HashMap<String, Mapping> getMethod(ArrayList<Class<?>> controller) throws UrlDuplicateException {
+    public static HashMap<String, Mapping> getMethod(ArrayList<Class<?>> controller) throws Exception {
         HashMap<String, Mapping> values = new HashMap<String, Mapping>();
         for (Class<?> class1 : controller) {
             Method[] methods = class1.getMethods();
@@ -50,18 +50,22 @@ public class ClassFinder {
                     Mapping mapping = new Mapping();
                     VerbAction verbAction = new VerbAction();
                     verbAction.setAction(method);
-
+                    verbAction.setVerb("GET");
                     // Check verb
-                    if (method.isAnnotationPresent(Get.class)) {
-                        verbAction.setVerb("GET");
-                    } else if (method.isAnnotationPresent(Post.class)) {
+                    /*
+                     * if (method.isAnnotationPresent(Get.class)) {
+                     * verbAction.setVerb("GET");
+                     * } else
+                     */
+                    if (method.isAnnotationPresent(Post.class)) {
                         verbAction.setVerb("POST");
                     }
 
                     // Check if url already exist
-                    if (values.get(url) != null && values.get(url).getClass().equals(class1)) {
-                        if (values.get(url).getVerbAction().contains(verbAction)) {
-                            throw new UrlDuplicateException("Url " + url + " already exist");
+                    // MBOLA TSY MANDEHA ITY CONDITION ITY
+                    if (values.get(url) != null ) {
+                        if (values.get(url).is_already_exist(verbAction.getVerb())) {
+                            throw new Exception("Url " + url + " already exist with the same verb");
                         } else {
                             values.get(url).getVerbAction().add(verbAction);
                         }

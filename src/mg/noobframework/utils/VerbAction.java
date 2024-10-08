@@ -30,6 +30,6 @@ public class VerbAction {
         this.action = action;
     }
 
-    
+
 
 }
