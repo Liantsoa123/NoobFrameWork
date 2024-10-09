@@ -1,4 +1,4 @@
-package mg.noobframework.utils;
+package mg.noobframework.url;
 
 import java.lang.reflect.Method;
 

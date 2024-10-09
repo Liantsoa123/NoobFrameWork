@@ -17,6 +17,7 @@ import mg.noobframework.annotation.RequestParamObject;
 import mg.noobframework.annotation.RestApi;
 import mg.noobframework.modelview.Modelview;
 import mg.noobframework.session.Mysession;
+import mg.noobframework.url.Mapping;
 
 public class MethodUtils {
     public static List<Object> getParamValue(Method method, HttpServletRequest request) throws Exception {

@@ -9,8 +9,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import mg.noobframework.annotation.Controller;
+import mg.noobframework.url.Mapping;
 import mg.noobframework.utils.ClassFinder;
-import mg.noobframework.utils.Mapping;
 import mg.noobframework.utils.MethodUtils;
 
 public class FrontController extends HttpServlet {
