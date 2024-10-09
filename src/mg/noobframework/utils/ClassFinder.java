@@ -7,10 +7,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import mg.noobframework.annotation.Get;
 import mg.noobframework.annotation.Post;
 import mg.noobframework.annotation.Url;
-import mg.noobframework.exception.UrlDuplicateException;
 import mg.noobframework.url.Mapping;
 import mg.noobframework.url.VerbAction;
 
@@ -65,12 +63,8 @@ public class ClassFinder {
 
                     // Check if url already exist
                     // MBOLA TSY MANDEHA ITY CONDITION ITY
-                    if (values.get(url) != null ) {
-                        if (values.get(url).is_already_exist(verbAction.getVerb())) {
-                            throw new Exception("Url " + url + " already exist with the same verb");
-                        } else {
-                            values.get(url).getVerbAction().add(verbAction);
-                        }
+                    if (values.get(url) != null) {
+                        values.get(url).getVerbAction().add(verbAction);
                     } else {
                         mapping.setClazzMapping(class1);
                         mapping.getVerbAction().add(verbAction);
