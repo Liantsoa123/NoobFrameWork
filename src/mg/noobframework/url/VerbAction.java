@@ -32,10 +32,15 @@ public class VerbAction {
 
     @Override
     public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
         if (obj instanceof VerbAction) {
             VerbAction verbAction = (VerbAction) obj;
-            // return verbAction.getVerb().equals(this.getVerb());
             if (verbAction.getVerb().equals(this.getVerb())) {
+                return true;
+            }
+            if (verbAction.getAction() == this.getAction()) {
                 return true;
             }
         }
