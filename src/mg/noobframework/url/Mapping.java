@@ -1,7 +1,6 @@
 package mg.noobframework.url;
 
-import java.util.List;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.lang.reflect.Method;
 
 public class Mapping {
@@ -9,9 +8,9 @@ public class Mapping {
     }
 
     private Class<?> clazzMapping;
-    private List<VerbAction> verbAction = new ArrayList<>();
+    private HashSet<VerbAction> verbAction = new HashSet<>();
 
-    public Mapping(Class<?> clazzMapping, List<VerbAction> verbAction) {
+    public Mapping(Class<?> clazzMapping, HashSet<VerbAction> verbAction) {
         this.setClazzMapping(clazzMapping);
         this.setVerbAction(verbAction);
     }
@@ -24,11 +23,11 @@ public class Mapping {
         this.clazzMapping = clazzMapping;
     }
 
-    public List<VerbAction> getVerbAction() {
+    public HashSet<VerbAction> getVerbAction() {
         return verbAction;
     }
 
-    public void setVerbAction(List<VerbAction> verbAction) {
+    public void setVerbAction(HashSet<VerbAction> verbAction) {
         this.verbAction = verbAction;
     }
 
