@@ -62,7 +62,6 @@ public class ClassFinder {
                     }
 
                     // Check if url already exist
-                    // MBOLA TSY MANDEHA ITY CONDITION ITY
                     if (values.get(url) != null) {
                         if (!values.get(url).getVerbAction().add(verbAction)) {
                             throw new Exception("ETU002510: The verb '" + verbAction.getVerb()
