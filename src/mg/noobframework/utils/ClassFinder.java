@@ -64,7 +64,10 @@ public class ClassFinder {
                     // Check if url already exist
                     // MBOLA TSY MANDEHA ITY CONDITION ITY
                     if (values.get(url) != null) {
-                        values.get(url).getVerbAction().add(verbAction);
+                        if (!values.get(url).getVerbAction().add(verbAction)) {
+                            throw new Exception("ETU002510: The verb '" + verbAction.getVerb()
+                                    + "' already exist for the url '" + url + "'");
+                        }
                     } else {
                         mapping.setClazzMapping(class1);
                         mapping.getVerbAction().add(verbAction);

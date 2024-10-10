@@ -33,14 +33,14 @@ public class VerbAction {
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
-            return false;
+            return true;
         }
         if (obj instanceof VerbAction) {
             VerbAction verbAction = (VerbAction) obj;
-            if (verbAction.getVerb().equals(this.getVerb())) {
+            if (this.getVerb() == verbAction.getVerb()) {
                 return true;
             }
-            if (verbAction.getAction() == this.getAction()) {
+            if (this.getAction() == verbAction.getAction()) {
                 return true;
             }
         }
@@ -49,7 +49,7 @@ public class VerbAction {
 
     @Override
     public int hashCode() {
-        return 1;
+        return 2510;
     }
 
 }
