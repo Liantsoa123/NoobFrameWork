@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import mg.noobframework.annotation.Controller;
+import mg.noobframework.error.ErrorHandler;
 import mg.noobframework.url.Mapping;
 import mg.noobframework.utils.ClassFinder;
 import mg.noobframework.utils.MethodUtils;
@@ -17,36 +18,39 @@ public class FrontController extends HttpServlet {
     private HashMap<String, Mapping> listeMethodes;
     private Exception exception;
 
-    public void processRequest(HttpServletRequest req, HttpServletResponse resp , String verb) throws IOException, ServletException {
+    public void processRequest(HttpServletRequest req, HttpServletResponse resp, String verb)
+            throws IOException, ServletException {
         PrintWriter out = resp.getWriter();
-        resp.setContentType("text/json");
+        resp.setContentType("text/html");
         if (exception != null) {
-            exception.printStackTrace(out);
+            ErrorHandler.printError(out, exception);
             return;
         }
         try {
             String url = req.getRequestURI().replace("/NoobFrameWork", "");
             if (listeMethodes.get(url) != null) {
-                MethodUtils.doMethod(req, resp, listeMethodes.get(url), out , verb);
+                MethodUtils.doMethod(req, resp, listeMethodes.get(url), out, verb);
             } else {
-                resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Url not Found");
+                // resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Url not Found");
+                ErrorHandler.printError(out, new Exception("Url not found"));
+                return;
             }
         } catch (Exception e) {
             // resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-            e.printStackTrace(out);
+            ErrorHandler.printError(out, e);
         }
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String verb = "GET";
-        processRequest(req, resp , verb);
+        processRequest(req, resp, verb);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String verb = "POST";
-        processRequest(req, resp , verb);
+        processRequest(req, resp, verb);
     }
 
     @Override
