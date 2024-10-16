@@ -63,11 +63,6 @@ public class ClassFinder {
 
                     // Check if url already exist
                     if (values.get(url) != null) {
-                        if (class1 == values.get(url).getClazzMapping()) {
-                            throw new Exception("ETU002510: Url '" + url + "'  duplicate in the class '"
-                                    + class1.getName() + "' and the class '"
-                                    + values.get(url).getClazzMapping().getName());
-                        }
                         if (!values.get(url).getVerbAction().add(verbAction)) {
                             throw new Exception("ETU002510: The verb '" + verbAction.getVerb()
                                     + "' already exist for the url '" + url + "'");
