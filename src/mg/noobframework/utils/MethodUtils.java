@@ -37,14 +37,19 @@ public class MethodUtils {
         return listValue;
     }
 
-    public static List<Object> getParamValues(Mapping mapping, HttpServletRequest request , String verb) throws Exception {
+    public static List<Object> getParamValues(Mapping mapping, HttpServletRequest request, String verb)
+            throws Exception {
         List<Object> listObject = new ArrayList<>();
         Parameter[] parameters = mapping.getMethodMapping(verb).getParameters();
 
         for (Parameter parameter : parameters) {
             Object obj = null;
+            // check if it's Part
+            if (parameter.getType().equals(jakarta.servlet.http.Part.class)) {
+                obj = request.getPart(parameter.getAnnotation(RequestParam.class).value());
+            }
             // check session
-            if (parameter.getType().equals(Mysession.class)) {
+            else if (parameter.getType().equals(Mysession.class)) {
                 obj = new Mysession(request.getSession());
             } else if (parameter.isAnnotationPresent(RequestParamObject.class)) {
                 obj = ObjectUtils.doSetter(parameter.getType(), request);
@@ -61,18 +66,18 @@ public class MethodUtils {
 
     }
 
-    public static Object executMethod(Mapping mapping, HttpServletRequest request , String verb) throws Exception {
+    public static Object executMethod(Mapping mapping, HttpServletRequest request, String verb) throws Exception {
         Class<?> clazz = mapping.getClazzMapping();
         Object obj = clazz.getConstructor().newInstance();
         setSessionAttribut(obj, request);
         Method method = mapping.getMethodMapping(verb);
-        List<Object> paramValue = getParamValues(mapping, request ,verb);
+        List<Object> paramValue = getParamValues(mapping, request, verb);
         return method.invoke(obj, paramValue.toArray());
     }
 
     public static void doMethod(HttpServletRequest request, HttpServletResponse response, Mapping mapping,
-            PrintWriter pWriter , String verb) throws Exception {
-        Object result = executMethod(mapping, request , verb );
+            PrintWriter pWriter, String verb) throws Exception {
+        Object result = executMethod(mapping, request, verb);
         if (result instanceof String) {
             // pWriter.println("<p>" + result + "</p>");
             pWriter.println(new Gson().toJson(result));
