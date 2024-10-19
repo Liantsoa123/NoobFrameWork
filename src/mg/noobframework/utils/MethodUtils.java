@@ -10,8 +10,10 @@ import java.util.List;
 
 import com.google.gson.Gson;
 
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
 import mg.noobframework.annotation.RequestParam;
 import mg.noobframework.annotation.RequestParamObject;
 import mg.noobframework.annotation.RestApi;
@@ -45,8 +47,12 @@ public class MethodUtils {
         for (Parameter parameter : parameters) {
             Object obj = null;
             // check if it's Part
-            if (parameter.getType().equals(jakarta.servlet.http.Part.class)) {
-                obj = request.getPart(parameter.getAnnotation(RequestParam.class).value());
+            // Check if it's Part type
+            if (Part.class.isAssignableFrom(parameter.getType())) {
+                RequestParam requestParam = parameter.getAnnotation(RequestParam.class);
+                if (requestParam != null) {
+                    obj = request.getPart(requestParam.value());
+                }
             }
             // check session
             else if (parameter.getType().equals(Mysession.class)) {
