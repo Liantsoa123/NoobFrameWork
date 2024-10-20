@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -13,6 +14,8 @@ import mg.noobframework.error.ErrorHandler;
 import mg.noobframework.url.Mapping;
 import mg.noobframework.utils.ClassFinder;
 import mg.noobframework.utils.MethodUtils;
+
+@MultipartConfig
 
 public class FrontController extends HttpServlet {
     private HashMap<String, Mapping> listeMethodes;
