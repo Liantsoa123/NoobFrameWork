@@ -20,7 +20,7 @@ public class FileUtils {
         }
     }
 
-    private static String extractFileName(Part part) {
+    public static String extractFileName(Part part) {
         String contentDisposition = part.getHeader("content-disposition");
         String[] items = contentDisposition.split(";");
         for (String s : items) {
