@@ -10,7 +10,6 @@ import java.util.List;
 
 import com.google.gson.Gson;
 
-import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;

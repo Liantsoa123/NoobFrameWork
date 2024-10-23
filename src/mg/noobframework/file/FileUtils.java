@@ -1,12 +1,11 @@
 package mg.noobframework.file;
 
 import jakarta.servlet.http.Part;
-import java.io.IOException;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
 public class FileUtils {
-    public static byte[] convertPartToBytes(Part part) throws IOException {
+    public static byte[] convertPartToBytes(Part part) throws Exception {
         try (InputStream inputStream = part.getInputStream();
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
 
@@ -15,7 +14,6 @@ public class FileUtils {
             while ((bytesRead = inputStream.read(buffer)) != -1) {
                 byteArrayOutputStream.write(buffer, 0, bytesRead);
             }
-
             return byteArrayOutputStream.toByteArray();
         }
     }
