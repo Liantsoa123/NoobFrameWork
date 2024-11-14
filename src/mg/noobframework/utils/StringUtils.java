@@ -19,13 +19,17 @@ public class StringUtils {
     }
 
     public static boolean isDate(String str) {
+        String dateRegex = "^\\d{4}-\\d{2}-\\d{2}$";
+
+        if (!str.matches(dateRegex)) {
+            return false;
+        }
+
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         dateFormat.setLenient(false);
         try {
             java.util.Date utilDate = dateFormat.parse(str);
-
             Date sqlDate = new Date(utilDate.getTime());
-
             return sqlDate != null;
         } catch (ParseException e) {
             return false;
@@ -36,7 +40,5 @@ public class StringUtils {
         String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
         return str.matches(emailRegex);
     }
-
-    
 
 }

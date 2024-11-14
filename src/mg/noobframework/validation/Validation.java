@@ -10,7 +10,7 @@ import mg.noobframework.utils.StringUtils;
 
 public class Validation {
     public static void checkValidation(Field field, String paramValue) throws Exception {
-        if (paramValue == null) {
+        if (paramValue == null || paramValue.isEmpty()) {
             if (field.isAnnotationPresent(Required.class)) {
                 throw new Exception("value required " + field.getName());
             }

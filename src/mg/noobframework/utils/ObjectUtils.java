@@ -53,6 +53,8 @@ public class ObjectUtils {
             return Byte.parseByte(value);
         } else if (targetType == char.class || targetType == Character.class) {
             return value.charAt(0);
+        } else if (targetType == java.sql.Date.class) {
+            return java.sql.Date.valueOf(value);
         }
         throw new IllegalArgumentException("Unsupported field type: " + targetType);
     }
