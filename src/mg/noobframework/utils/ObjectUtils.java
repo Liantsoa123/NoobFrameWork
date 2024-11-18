@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import jakarta.servlet.http.HttpServletRequest;
+import mg.noobframework.validation.Validation;
 
 public class ObjectUtils {
     public static Object doSetter(Class<?> clazz, HttpServletRequest request) throws Exception {
@@ -13,6 +14,7 @@ public class ObjectUtils {
         for (Field field : fields) {
             String fieldName = field.getName();
             String paramValue = request.getParameter(fieldName);
+            Validation.checkValidation(field, paramValue);
             if (paramValue != null) {
                 Object parmaObject = convertValue(paramValue, field.getType());
                 // String setterName = "set" + StringUtils.toUppurcaseFirstLetter(fieldName);
@@ -51,6 +53,8 @@ public class ObjectUtils {
             return Byte.parseByte(value);
         } else if (targetType == char.class || targetType == Character.class) {
             return value.charAt(0);
+        } else if (targetType == java.sql.Date.class) {
+            return java.sql.Date.valueOf(value);
         }
         throw new IllegalArgumentException("Unsupported field type: " + targetType);
     }
