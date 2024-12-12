@@ -16,8 +16,8 @@ public class ObjectUtils {
         for (Field field : fields) {
             String fieldName = field.getName();
             String paramValue = request.getParameter(fieldName);
-            Validation.checkValidation(field, paramValue, request, error);
-            if (paramValue != null) {
+
+            if (paramValue != null && Validation.checkValidation(field, paramValue, request, error)) {
                 Object parmaObject = convertValue(paramValue, field.getType());
                 Method method = getSetterMethod(clazz, field);
                 method.invoke(obj, parmaObject);
