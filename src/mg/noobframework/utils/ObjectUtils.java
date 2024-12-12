@@ -2,27 +2,31 @@ package mg.noobframework.utils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 
 import jakarta.servlet.http.HttpServletRequest;
 import mg.noobframework.validation.Validation;
 
 public class ObjectUtils {
-    public static Object doSetter(Class<?> clazz, HttpServletRequest request) throws Exception {
+    public static Object doSetter(Class<?> clazz, HttpServletRequest request, HashMap<String, String> error)
+            throws Exception {
         Object obj = clazz.getConstructor().newInstance();
         Field[] fields = clazz.getDeclaredFields();
 
         for (Field field : fields) {
             String fieldName = field.getName();
             String paramValue = request.getParameter(fieldName);
-            Validation.checkValidation(field, paramValue);
-            if (paramValue != null) {
+
+            if (paramValue != null && Validation.checkValidation(field, paramValue, request, error)) {
                 Object parmaObject = convertValue(paramValue, field.getType());
-                // String setterName = "set" + StringUtils.toUppurcaseFirstLetter(fieldName);
                 Method method = getSetterMethod(clazz, field);
                 method.invoke(obj, parmaObject);
             } else {
                 obj = null;
             }
+        }
+        if (error.size() > 0) {
+            request.setAttribute("error", error);
         }
         return obj;
     }
