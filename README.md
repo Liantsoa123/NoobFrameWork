@@ -80,6 +80,39 @@ Controller
 
 ```
 
+From 
+```jsp
+
+<%@ page import="java.util.HashMap" %><%
+    HashMap<String , String> error = new HashMap<String , String>();
+    if(request.getAttribute("error") != null){
+        error = (HashMap<String , String>) request.getAttribute("error");
+    }
+%>
+
+  <h3>Test Validation</h3>
+    <form action="./validation" method="Post">
+        <p style="color:red"><%= error.get("name") != null ? error.get("name") : "" %></p>
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" value="<%= request.getParameter("name") != null ? request.getParameter("name") : "" %>">
+    
+        <p style="color:red"><%= error.get("age") != null ? error.get("age") : "" %></p>
+        <label for="age">Age</label>
+        <input type="text" id="age" name="age" value="<%= request.getParameter("age") != null ? request.getParameter("age") : "" %>">
+    
+        <p style="color:red"><%= error.get("naissance") != null ? error.get("naissance") : "" %></p>
+        <label for="naissance">Naissance</label>
+        <input type="text" id="naissance" name="naissance" value="<%= request.getParameter("naissance") != null ? request.getParameter("naissance") : "" %>">
+    
+        <p style="color:red"><%= error.get("email") != null ? error.get("email") : "" %></p>
+        <label for="email">Email</label>
+        <input type="text" id="email" name="email" value="<%= request.getParameter("email") != null ? request.getParameter("email") : "" %>">
+    
+        <input type="submit" value="OK">
+    </form>
+
+```
+
 ## License
 
 Distributed under the MIT License. See [LICENSE](./LICENSE)for more information.
