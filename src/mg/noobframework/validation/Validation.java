@@ -7,13 +7,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import mg.noobframework.annotation.Date;
 import mg.noobframework.annotation.Email;
 import mg.noobframework.annotation.Numerique;
-import mg.noobframework.annotation.Required;
+import mg.noobframework.annotation.Required; 
 import mg.noobframework.utils.StringUtils;
 
 public class Validation {
-    public static void checkValidation(Field field, String paramValue, HttpServletRequest request) throws Exception {
-        HashMap<String, String> error = new HashMap<>();
-        if (paramValue == null || paramValue.isEmpty()) {
+    public static void checkValidation(Field field, String paramValue, HttpServletRequest request,
+            HashMap<String, String> error) throws Exception {
+        if (paramValue == null || paramValue.isEmpty() || paramValue.isBlank()) {
             if (field.isAnnotationPresent(Required.class)) {
                 // throw new Exception("value required " + field.getName());
                 error.put(field.getName(), "value required");
@@ -37,9 +37,5 @@ public class Validation {
                 }
             }
         }
-        if (!error.isEmpty()) {
-            request.setAttribute("error", error);
-        }
     }
-
 }
