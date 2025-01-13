@@ -3,7 +3,6 @@ package mg.noobframework.auth;
 import java.lang.reflect.Method;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import mg.noobframework.annotation.Auth;
 
 public class AuthMethod {
@@ -34,18 +33,21 @@ public class AuthMethod {
         this.roles = roles;
     }
 
-    public boolean isAuth(HttpServletRequest request, Method method) {
-        String role_user = (String) request.getSession().getAttribute(roles);
+    public boolean isAuthenticated(HttpServletRequest request, Method method) {
+        String roleUser = (String) request.getSession().getAttribute(roles);
+
         boolean isAuth = false;
         if (method.isAnnotationPresent(Auth.class)) {
             Auth auth = method.getAnnotation(Auth.class);
-            String[] role = auth.value().split(",");
-            for (String r : role) {
-                if (role_user.equals(r)) {
+            String[] roles = auth.value();
+            for (String role : roles) {
+                if (role.equals(roleUser)) {
                     isAuth = true;
                     break;
                 }
             }
+        } else {
+            isAuth = true;
         }
         return isAuth;
     }

@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import mg.noobframework.annotation.Controller;
+import mg.noobframework.auth.AuthMethod;
 import mg.noobframework.error.ErrorHandler;
 import mg.noobframework.url.Mapping;
 import mg.noobframework.utils.ClassFinder;
@@ -20,6 +21,7 @@ import mg.noobframework.utils.MethodUtils;
 public class FrontController extends HttpServlet {
     private HashMap<String, Mapping> listeMethodes;
     private Exception exception;
+    private AuthMethod authMethod;
 
     public void processRequest(HttpServletRequest req, HttpServletResponse resp, String verb)
             throws IOException, ServletException {
@@ -32,7 +34,7 @@ public class FrontController extends HttpServlet {
         try {
             String url = req.getRequestURI().replace("/NoobFrameWork", "");
             if (listeMethodes.get(url) != null) {
-                MethodUtils.doMethod(req, resp, listeMethodes.get(url), out, verb);
+                MethodUtils.doMethod(req, resp, listeMethodes.get(url), out, verb, authMethod);
             } else {
                 // resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Url not Found");
                 ErrorHandler.printError(out, new Exception("Url not found : " + url));
@@ -63,6 +65,14 @@ public class FrontController extends HttpServlet {
             exception = new Exception("controller_dir is null");
             return;
         }
+
+        // Get about auth
+        String user_session_name = getInitParameter("user_name");
+        String roles = getInitParameter("roles_name");
+        if (!user_session_name.equals(null) && !roles.equals(null)) {
+            authMethod = new AuthMethod(user_session_name, roles);
+        }
+
         try {
             ArrayList<Class<?>> controller = ClassFinder.getAllClassAnnotation(packageName, Controller.class);
             listeMethodes = ClassFinder.getMethod(controller);

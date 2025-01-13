@@ -51,12 +51,7 @@ public class ClassFinder {
                     VerbAction verbAction = new VerbAction();
                     verbAction.setAction(method);
                     verbAction.setVerb("GET");
-                    // Check verb
-                    /*
-                     * if (method.isAnnotationPresent(Get.class)) {
-                     * verbAction.setVerb("GET");
-                     * } else
-                     */
+                    
                     if (method.isAnnotationPresent(Post.class)) {
                         verbAction.setVerb("POST");
                     }

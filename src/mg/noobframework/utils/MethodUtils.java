@@ -17,6 +17,7 @@ import jakarta.servlet.http.Part;
 import mg.noobframework.annotation.RequestParam;
 import mg.noobframework.annotation.RequestParamObject;
 import mg.noobframework.annotation.RestApi;
+import mg.noobframework.auth.AuthMethod;
 import mg.noobframework.file.File;
 import mg.noobframework.file.FileUtils;
 import mg.noobframework.modelview.Modelview;
@@ -85,12 +86,18 @@ public class MethodUtils {
         setSessionAttribut(obj, request);
         Method method = mapping.getMethodMapping(verb);
         List<Object> paramValue = getParamValues(mapping, request, verb, error);
+
         return method.invoke(obj, paramValue.toArray());
     }
 
     public static void doMethod(HttpServletRequest request, HttpServletResponse response, Mapping mapping,
-            PrintWriter pWriter, String verb) throws Exception {
+            PrintWriter pWriter, String verb, AuthMethod authMethod) throws Exception {
         HashMap<String, String> error = new HashMap<>();
+        if (authMethod != null) {
+            if (!authMethod.isAuthenticated(request, mapping.getMethodMapping(verb))) {
+                throw new Exception("You are not authorized to access this page ");
+            }
+        }
         Object result = executMethod(mapping, request, verb, error);
 
         if (result instanceof String) {
