@@ -9,27 +9,28 @@ import mg.noobframework.validation.Validation;
 
 public class ObjectUtils {
     public static Object doSetter(Class<?> clazz, HttpServletRequest request, HashMap<String, String> error)
-            throws Exception {
-        Object obj = clazz.getConstructor().newInstance();
-        Field[] fields = clazz.getDeclaredFields();
+        throws Exception {
+    Object obj = clazz.getConstructor().newInstance();
+    Field[] fields = clazz.getDeclaredFields();
+    
 
-        for (Field field : fields) {
-            String fieldName = field.getName();
-            String paramValue = request.getParameter(clazz.getSimpleName() + "." + fieldName);
+    for (Field field : fields) {
+        String fieldName = field.getName();
+        String paramValue = request.getParameter(clazz.getSimpleName() + "." + fieldName);
 
-            if (paramValue != null && Validation.checkValidation(field, paramValue, request, error)) {
-                Object parmaObject = convertValue(paramValue, field.getType());
-                Method method = getSetterMethod(clazz, field);
-                method.invoke(obj, parmaObject);
-            } else {
-                obj = null;
-            }
-        }
-        if (error.size() > 0) {
-            request.setAttribute("error", error);
-        }
-        return obj;
+        if (Validation.checkValidation(field, paramValue, request, error)) {
+            Object parmaObject = convertValue(paramValue, field.getType());
+            Method method = getSetterMethod(clazz, field);
+            method.invoke(obj, parmaObject);
+        } 
     }
+
+    if (error.size() > 0) {
+        request.setAttribute("error", error);
+    }
+
+    return  obj;
+}
 
     public static Method getSetterMethod(Class<?> clazz, Field field) throws Exception {
         String fieldName = field.getName();
