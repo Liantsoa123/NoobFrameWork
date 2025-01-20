@@ -15,7 +15,7 @@ public class ObjectUtils {
 
         for (Field field : fields) {
             String fieldName = field.getName();
-            String paramValue = request.getParameter(fieldName);
+            String paramValue = request.getParameter(clazz.getSimpleName() + "." + fieldName);
 
             if (paramValue != null && Validation.checkValidation(field, paramValue, request, error)) {
                 Object parmaObject = convertValue(paramValue, field.getType());
