@@ -17,7 +17,7 @@ import jakarta.servlet.http.Part;
 import mg.noobframework.annotation.RequestParam;
 import mg.noobframework.annotation.RequestParamObject;
 import mg.noobframework.annotation.RestApi;
-import mg.noobframework.auth.AuthMethod;
+import mg.noobframework.auth.AuthMethodUtils;
 import mg.noobframework.file.File;
 import mg.noobframework.file.FileUtils;
 import mg.noobframework.modelview.Modelview;
@@ -34,7 +34,6 @@ public class MethodUtils {
                 paramName = parameter.getAnnotation(RequestParam.class).value();
                 listValue.add(request.getParameter(paramName));
             } else {
-                // listValue.add("");
                 throw new Exception(
                         "ETU002510  annotation not found ");
             }
@@ -91,7 +90,7 @@ public class MethodUtils {
     }
 
     public static void doMethod(HttpServletRequest request, HttpServletResponse response, Mapping mapping,
-            PrintWriter pWriter, String verb, AuthMethod authMethod) throws Exception {
+            PrintWriter pWriter, String verb, AuthMethodUtils authMethod) throws Exception {
         HashMap<String, String> error = new HashMap<>();
         if (authMethod != null) {
             if (!authMethod.isAuthenticated(request, mapping.getMethodMapping(verb))) {

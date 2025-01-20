@@ -3,18 +3,18 @@ package mg.noobframework.auth;
 import java.lang.reflect.Method;
 
 import jakarta.servlet.http.HttpServletRequest;
-import mg.noobframework.annotation.Auth;
+import mg.noobframework.annotation.AuthMethod;
 
-public class AuthMethod {
+public class AuthMethodUtils {
     private String userName;
     private String roles;
 
-    public AuthMethod(String userName, String roles) {
+    public AuthMethodUtils(String userName, String roles) {
         this.userName = userName;
         this.setRoles(roles);
     }
 
-    public AuthMethod() {
+    public AuthMethodUtils() {
     }
 
     public String getUserName() {
@@ -37,8 +37,8 @@ public class AuthMethod {
         String roleUser = (String) request.getSession().getAttribute(roles);
 
         boolean isAuth = false;
-        if (method.isAnnotationPresent(Auth.class)) {
-            Auth auth = method.getAnnotation(Auth.class);
+        if (method.isAnnotationPresent(AuthMethod.class)) {
+            AuthMethod auth = method.getAnnotation(AuthMethod.class);
             String[] roles = auth.value();
             for (String role : roles) {
                 if (role.equals(roleUser)) {
