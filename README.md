@@ -94,19 +94,19 @@ From
     <form action="./validation" method="Post">
         <p style="color:red"><%= error.get("name") != null ? error.get("name") : "" %></p>
         <label for="name">Name</label>
-        <input type="text" id="name" name="name" value="<%= request.getParameter("name") != null ? request.getParameter("name") : "" %>">
+        <input type="text" id="name" name="Emp.name" value="<%= request.getParameter("name") != null ? request.getParameter("name") : "" %>">
     
         <p style="color:red"><%= error.get("age") != null ? error.get("age") : "" %></p>
         <label for="age">Age</label>
-        <input type="text" id="age" name="age" value="<%= request.getParameter("age") != null ? request.getParameter("age") : "" %>">
+        <input type="text" id="age" name="Emp.age" value="<%= request.getParameter("age") != null ? request.getParameter("age") : "" %>">
     
         <p style="color:red"><%= error.get("naissance") != null ? error.get("naissance") : "" %></p>
         <label for="naissance">Naissance</label>
-        <input type="text" id="naissance" name="naissance" value="<%= request.getParameter("naissance") != null ? request.getParameter("naissance") : "" %>">
+        <input type="text" id="naissance" name="Emp.naissance" value="<%= request.getParameter("naissance") != null ? request.getParameter("naissance") : "" %>">
     
         <p style="color:red"><%= error.get("email") != null ? error.get("email") : "" %></p>
         <label for="email">Email</label>
-        <input type="text" id="email" name="email" value="<%= request.getParameter("email") != null ? request.getParameter("email") : "" %>">
+        <input type="text" id="email" name="Emp.email" value="<%= request.getParameter("email") != null ? request.getParameter("email") : "" %>">
     
         <input type="submit" value="OK">
     </form>
