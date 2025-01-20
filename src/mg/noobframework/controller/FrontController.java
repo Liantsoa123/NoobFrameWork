@@ -10,7 +10,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import mg.noobframework.annotation.Controller;
-import mg.noobframework.auth.AuthMethod;
+import mg.noobframework.auth.AuthMethodUtils;
 import mg.noobframework.error.ErrorHandler;
 import mg.noobframework.url.Mapping;
 import mg.noobframework.utils.ClassFinder;
@@ -21,28 +21,28 @@ import mg.noobframework.utils.MethodUtils;
 public class FrontController extends HttpServlet {
     private HashMap<String, Mapping> listeMethodes;
     private Exception exception;
-    private AuthMethod authMethod;
+    private AuthMethodUtils authMethodUtils;
 
     public void processRequest(HttpServletRequest req, HttpServletResponse resp, String verb)
             throws IOException, ServletException {
         PrintWriter out = resp.getWriter();
         resp.setContentType("text/html");
         if (exception != null) {
-            ErrorHandler.printError(out, exception);
+            ErrorHandler.printError(out, exception , 500 );
             return;
         }
         try {
             String url = req.getRequestURI().replace("/NoobFrameWork", "");
             if (listeMethodes.get(url) != null) {
-                MethodUtils.doMethod(req, resp, listeMethodes.get(url), out, verb, authMethod);
+                MethodUtils.doMethod(req, resp, listeMethodes.get(url), out, verb, authMethodUtils);
             } else {
                 // resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Url not Found");
-                ErrorHandler.printError(out, new Exception("Url not found : " + url));
+                ErrorHandler.printError(out, new Exception("Url not found : " + url) , 404);
                 return;
             }
         } catch (Exception e) {
             // resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-            ErrorHandler.printError(out, e);
+            ErrorHandler.printError(out, e, 500);
         }
     }
 
@@ -70,7 +70,7 @@ public class FrontController extends HttpServlet {
         String user_session_name = getInitParameter("user_name");
         String roles = getInitParameter("roles_name");
         if (!user_session_name.equals(null) && !roles.equals(null)) {
-            authMethod = new AuthMethod(user_session_name, roles);
+            authMethodUtils = new AuthMethodUtils(user_session_name, roles);
         }
 
         try {
