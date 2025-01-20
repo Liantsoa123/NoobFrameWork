@@ -28,7 +28,7 @@ public class FrontController extends HttpServlet {
         PrintWriter out = resp.getWriter();
         resp.setContentType("text/html");
         if (exception != null) {
-            ErrorHandler.printError(out, exception);
+            ErrorHandler.printError(out, exception , 500 );
             return;
         }
         try {
@@ -37,12 +37,12 @@ public class FrontController extends HttpServlet {
                 MethodUtils.doMethod(req, resp, listeMethodes.get(url), out, verb, authMethodUtils);
             } else {
                 // resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Url not Found");
-                ErrorHandler.printError(out, new Exception("Url not found : " + url));
+                ErrorHandler.printError(out, new Exception("Url not found : " + url) , 404);
                 return;
             }
         } catch (Exception e) {
             // resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-            ErrorHandler.printError(out, e);
+            ErrorHandler.printError(out, e, 500);
         }
     }
 
