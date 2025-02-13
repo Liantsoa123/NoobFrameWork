@@ -34,6 +34,12 @@ public class FrontController extends HttpServlet {
         }
         try {
             String url = req.getRequestURI().replace("/" + projectName, "");
+            // Check if the request is for a static resource
+            if (url.matches(".*\\.(css|js|jpg|jpeg|png|gif)$")) {
+                // Forward to the default servlet
+                getServletContext().getNamedDispatcher("default").forward(req, resp);
+                return;
+            }
             if (listeMethodes.get(url) != null) {
                 MethodUtils.doMethod(req, resp, listeMethodes.get(url), out, verb, authMethodUtils);
             } else {
