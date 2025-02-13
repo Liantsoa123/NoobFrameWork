@@ -2,6 +2,9 @@ package mg.noobframework.utils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,28 +12,27 @@ import mg.noobframework.validation.Validation;
 
 public class ObjectUtils {
     public static Object doSetter(Class<?> clazz, HttpServletRequest request, HashMap<String, String> error)
-        throws Exception {
-    Object obj = clazz.getConstructor().newInstance();
-    Field[] fields = clazz.getDeclaredFields();
-    
+            throws Exception {
+        Object obj = clazz.getConstructor().newInstance();
+        Field[] fields = clazz.getDeclaredFields();
 
-    for (Field field : fields) {
-        String fieldName = field.getName();
-        String paramValue = request.getParameter(clazz.getSimpleName() + "." + fieldName);
+        for (Field field : fields) {
+            String fieldName = field.getName();
+            String paramValue = request.getParameter(clazz.getSimpleName() + "." + fieldName);
 
-        if (Validation.checkValidation(field, paramValue, request, error)) {
-            Object parmaObject = convertValue(paramValue, field.getType());
-            Method method = getSetterMethod(clazz, field);
-            method.invoke(obj, parmaObject);
-        } 
+            if (Validation.checkValidation(field, paramValue, request, error)) {
+                Object parmaObject = convertValue(paramValue, field.getType());
+                Method method = getSetterMethod(clazz, field);
+                method.invoke(obj, parmaObject);
+            }
+        }
+
+        if (error.size() > 0) {
+            request.setAttribute("error", error);
+        }
+
+        return obj;
     }
-
-    if (error.size() > 0) {
-        request.setAttribute("error", error);
-    }
-
-    return  obj;
-}
 
     public static Method getSetterMethod(Class<?> clazz, Field field) throws Exception {
         String fieldName = field.getName();
@@ -60,6 +62,10 @@ public class ObjectUtils {
             return value.charAt(0);
         } else if (targetType == java.sql.Date.class) {
             return java.sql.Date.valueOf(value);
+        } else if (targetType == java.sql.Timestamp.class) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+            LocalDateTime localDateTime = LocalDateTime.parse(value, formatter);
+            return Timestamp.valueOf(localDateTime);
         }
         throw new IllegalArgumentException("Unsupported field type: " + targetType);
     }
