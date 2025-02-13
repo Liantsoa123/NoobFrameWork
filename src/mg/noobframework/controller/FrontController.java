@@ -22,22 +22,23 @@ public class FrontController extends HttpServlet {
     private HashMap<String, Mapping> listeMethodes;
     private Exception exception;
     private AuthMethodUtils authMethodUtils;
+    private String projectName;
 
     public void processRequest(HttpServletRequest req, HttpServletResponse resp, String verb)
             throws IOException, ServletException {
         PrintWriter out = resp.getWriter();
         resp.setContentType("text/html");
         if (exception != null) {
-            ErrorHandler.printError(out, exception , 500 );
+            ErrorHandler.printError(out, exception, 500);
             return;
         }
         try {
-            String url = req.getRequestURI().replace("/NoobFrameWork", "");
+            String url = req.getRequestURI().replace("/" + projectName, "");
             if (listeMethodes.get(url) != null) {
                 MethodUtils.doMethod(req, resp, listeMethodes.get(url), out, verb, authMethodUtils);
             } else {
                 // resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Url not Found");
-                ErrorHandler.printError(out, new Exception("Url not found : " + url) , 404);
+                ErrorHandler.printError(out, new Exception("Url not found : " + url), 404);
                 return;
             }
         } catch (Exception e) {
@@ -60,6 +61,14 @@ public class FrontController extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
+        // Get about project name
+        projectName = this.getInitParameter("project_name");
+        if (projectName == null) {
+            exception = new Exception("project_name is null");
+            return;
+        }
+
+        // Get about controller dir
         String packageName = this.getInitParameter("controller_dir");
         if (packageName == null) {
             exception = new Exception("controller_dir is null");
