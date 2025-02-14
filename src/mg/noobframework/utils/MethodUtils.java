@@ -93,8 +93,10 @@ public class MethodUtils {
             PrintWriter pWriter, String verb, AuthUtils authMethod) throws Exception {
         HashMap<String, String> error = new HashMap<>();
         if (authMethod != null) {
-            if (!authMethod.isAuthenticated(request, mapping, verb)) {
-                throw new Exception("You are not authorized to access this page ");
+            // CHECK AUTHENTICATION
+            String authError = authMethod.isAuthenticated(request, mapping, verb);
+            if (authError != null) {
+                throw new Exception(authError);
             }
         }
         Object result = executMethod(mapping, request, verb, error);
