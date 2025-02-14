@@ -5,16 +5,16 @@ import mg.noobframework.annotation.AuthClass;
 import mg.noobframework.annotation.AuthMethod;
 import mg.noobframework.url.Mapping;
 
-public class AuthMethodUtils {
+public class AuthUtils {
     private String userName;
     private String roles;
 
-    public AuthMethodUtils(String userName, String roles) {
+    public AuthUtils(String userName, String roles) {
         this.userName = userName;
         this.setRoles(roles);
     }
 
-    public AuthMethodUtils() {
+    public AuthUtils() {
     }
 
     public String getUserName() {

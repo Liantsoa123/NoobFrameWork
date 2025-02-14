@@ -10,7 +10,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import mg.noobframework.annotation.Controller;
-import mg.noobframework.auth.AuthMethodUtils;
+import mg.noobframework.auth.AuthUtils;
 import mg.noobframework.error.ErrorHandler;
 import mg.noobframework.url.Mapping;
 import mg.noobframework.utils.ClassFinder;
@@ -21,7 +21,7 @@ import mg.noobframework.utils.MethodUtils;
 public class FrontController extends HttpServlet {
     private HashMap<String, Mapping> listeMethodes;
     private Exception exception;
-    private AuthMethodUtils authMethodUtils;
+    private AuthUtils authMethodUtils;
     private String projectName;
 
     public void processRequest(HttpServletRequest req, HttpServletResponse resp, String verb)
@@ -85,7 +85,7 @@ public class FrontController extends HttpServlet {
         String user_session_name = getInitParameter("user_name");
         String roles = getInitParameter("roles_name");
         if (!user_session_name.equals(null) && !roles.equals(null)) {
-            authMethodUtils = new AuthMethodUtils(user_session_name, roles);
+            authMethodUtils = new AuthUtils(user_session_name, roles);
         }
 
         try {
