@@ -43,12 +43,10 @@ public class FrontController extends HttpServlet {
             if (listeMethodes.get(url) != null) {
                 MethodUtils.doMethod(req, resp, listeMethodes.get(url), out, verb, authMethodUtils);
             } else {
-                // resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Url not Found");
                 ErrorHandler.printError(out, new Exception("Url not found : " + url), 404);
                 return;
             }
         } catch (Exception e) {
-            // resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
             ErrorHandler.printError(out, e, 500);
         }
     }
