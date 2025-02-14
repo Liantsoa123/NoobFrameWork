@@ -42,40 +42,42 @@ public class MethodUtils {
     }
 
     public static List<Object> getParamValues(Mapping mapping, HttpServletRequest request, String verb,
-            HashMap<String, String> error)
-            throws Exception {
+            HashMap<String, String> error) throws Exception {
         List<Object> listObject = new ArrayList<>();
         Parameter[] parameters = mapping.getMethodMapping(verb).getParameters();
 
         for (Parameter parameter : parameters) {
             Object obj = null;
-            // check if it's File Class
-            if (File.class.equals(parameter.getType())) {
-                RequestParam requestParam = parameter.getAnnotation(RequestParam.class);
-                if (requestParam != null) {
-                    File file = new File();
-                    Part part = request.getPart(requestParam.value());
-                    file.setByteFromPart(part);
-                    file.setFileName(FileUtils.extractFileName(part));
-                    obj = file;
+            try {
+                // check if it's File Class
+                if (File.class.equals(parameter.getType())) {
+                    RequestParam requestParam = parameter.getAnnotation(RequestParam.class);
+                    if (requestParam != null) {
+                        File file = new File();
+                        Part part = request.getPart(requestParam.value());
+                        file.setByteFromPart(part);
+                        file.setFileName(FileUtils.extractFileName(part));
+                        obj = file;
+                    }
                 }
-            }
-            // check session
-            else if (parameter.getType().equals(Mysession.class)) {
-                obj = new Mysession(request.getSession());
-            } else if (parameter.isAnnotationPresent(RequestParamObject.class)) {
-                obj = ObjectUtils.doSetter(parameter.getType(), request, error);
-            } else if (parameter.isAnnotationPresent(RequestParam.class)) {
-                obj = request.getParameter(parameter.getAnnotation(RequestParam.class).value());
-            } else {
-                throw new Exception("ETU002510: No valid annotation found for the parameter '"
-                        + parameter.getName() + "' of type '" + parameter.getType()
-                        + "' in the function you want to use");
+                // check session
+                else if (parameter.getType().equals(Mysession.class)) {
+                    obj = new Mysession(request.getSession());
+                } else if (parameter.isAnnotationPresent(RequestParamObject.class)) {
+                    obj = ObjectUtils.doSetter(parameter.getType(), request, error);
+                } else if (parameter.isAnnotationPresent(RequestParam.class)) {
+                    String paramValue = request.getParameter(parameter.getAnnotation(RequestParam.class).value());
+                    obj = ObjectUtils.convertValue(paramValue, parameter.getType());
+                } else {
+                    throw new Exception("ETU002510: No valid annotation found for parameter " + parameter.getName());
+                }
+            } catch (Exception e) {
+                throw new IllegalArgumentException("Erreur de conversion pour le paramètre " + parameter.getName() +
+                        ": " + e.getMessage());
             }
             listObject.add(obj);
         }
         return listObject;
-
     }
 
     public static Object executMethod(Mapping mapping, HttpServletRequest request, String verb,
