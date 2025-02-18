@@ -94,6 +94,7 @@ public class MethodUtils {
     public static void doMethod(HttpServletRequest request, HttpServletResponse response, Mapping mapping,
             PrintWriter pWriter, String verb, AuthUtils authMethod) throws Exception {
         HashMap<String, String> error = new HashMap<>();
+
         if (authMethod != null) {
             // CHECK AUTHENTICATION
             String authError = authMethod.isAuthenticated(request, mapping, verb);
@@ -101,6 +102,29 @@ public class MethodUtils {
                 throw new Exception(authError);
             }
         }
+
+        // CHECK VALIDATION
+        List<Object> paramValues = getParamValues(mapping, request, verb, error);
+        if (error.size() > 0) {
+            String url = request.getParameter("url");
+            if (url == null) {
+                url = request.getHeader("Referer");
+                if (url != null) {
+                    url = url.substring(url.indexOf(request.getContextPath()) + request.getContextPath().length());
+                }
+            }
+
+            HttpServletRequest getRequest = new HttpServletRequestWrapper(request) {
+                @Override
+                public String getMethod() {
+                    return "GET";
+                }
+            };
+            request.setAttribute("error", error);
+            Redirecte.redirecting(getRequest, response, url);
+            return;
+        }
+
         Object result = executMethod(mapping, request, verb, error);
 
         if (result instanceof String) {
@@ -109,17 +133,6 @@ public class MethodUtils {
             Modelview modelview = (Modelview) result;
             HashMap<String, Object> data = modelview.getData();
 
-            // CHECK VALIDATION
-            if (error.size() > 0) {
-                HttpServletRequest getRequest = new HttpServletRequestWrapper(request) {
-                    @Override
-                    public String getMethod() {
-                        return "GET";
-                    }
-                };
-                Redirecte.redirecting(getRequest, response, data.get("url").toString());
-                return;
-            }
             if (mapping.getMethodMapping(verb).isAnnotationPresent(RestApi.class)) {
                 pWriter.println(new Gson().toJson(data));
             } else {
