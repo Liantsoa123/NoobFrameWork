@@ -41,10 +41,9 @@ public class AuthUtils {
             AuthMethod authMethod = mapping.getMethodMapping(verb).getAnnotation(AuthMethod.class);
             String[] rolesMethod = authMethod.value();
 
-            // Check if user has any of the required roles
             for (String role : rolesMethod) {
                 if (role.equalsIgnoreCase(roleUser)) {
-                    return null; // User is authorized
+                    return null;
                 }
             }
             return "Access Denied: Insufficient permissions. " +
@@ -57,10 +56,9 @@ public class AuthUtils {
             AuthClass authClass = mapping.getClazzMapping().getAnnotation(AuthClass.class);
             String[] roles = authClass.value();
 
-            // Check if user has any of the required roles
             for (String role : roles) {
                 if (role.equalsIgnoreCase(roleUser)) {
-                    return null; // User is authorized
+                    return null;
                 }
             }
             return "Access Denied: Insufficient permissions. " +
@@ -69,6 +67,6 @@ public class AuthUtils {
                     "Please contact your system administrator if you believe this is an error.";
         }
 
-        return null; // No authentication required
+        return null;
     }
 }
