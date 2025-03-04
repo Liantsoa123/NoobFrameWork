@@ -21,8 +21,6 @@ public class Validation {
                 error.put(field.getName(), "value required");
                 return false;
             }
-            // Si le champ n'est pas requis et est vide, on retourne true
-            return !isRequired; 
         }
 
         // Validation des autres contraintes si la valeur n'est pas vide

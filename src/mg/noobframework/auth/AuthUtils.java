@@ -5,16 +5,16 @@ import mg.noobframework.annotation.AuthClass;
 import mg.noobframework.annotation.AuthMethod;
 import mg.noobframework.url.Mapping;
 
-public class AuthMethodUtils {
+public class AuthUtils {
     private String userName;
     private String roles;
 
-    public AuthMethodUtils(String userName, String roles) {
+    public AuthUtils(String userName, String roles) {
         this.userName = userName;
         this.setRoles(roles);
     }
 
-    public AuthMethodUtils() {
+    public AuthUtils() {
     }
 
     public String getUserName() {
@@ -33,35 +33,40 @@ public class AuthMethodUtils {
         this.roles = roles;
     }
 
-    public boolean isAuthenticated(HttpServletRequest request, Mapping mapping, String verb) throws Exception {
-        String roleUser = (String) request.getSession().getAttribute(roles);
+    public String isAuthenticated(HttpServletRequest request, Mapping mapping, String verb) throws Exception {
+        String roleUser = (String) request.getSession().getAttribute("roles");
 
-        boolean isAuth = false;
-        // check auth method
+        // Check auth method
         if (mapping.getMethodMapping(verb).isAnnotationPresent(AuthMethod.class)) {
             AuthMethod authMethod = mapping.getMethodMapping(verb).getAnnotation(AuthMethod.class);
             String[] rolesMethod = authMethod.value();
+
             for (String role : rolesMethod) {
-                if (role.equals(roleUser)) {
-                    isAuth = true;
-                    break;
+                if (role.equalsIgnoreCase(roleUser)) {
+                    return null;
                 }
             }
+            return "Access Denied: Insufficient permissions. " +
+                    "Your current role (" + roleUser + ") does not have access to this resource. " +
+                    "Required roles: " + String.join(", ", rolesMethod) + ". " +
+                    "Please contact your system administrator if you believe this is an error.";
         }
-        // check auth Class
+        // Check auth Class
         else if (mapping.getClazzMapping().isAnnotationPresent(AuthClass.class)) {
             AuthClass authClass = mapping.getClazzMapping().getAnnotation(AuthClass.class);
             String[] roles = authClass.value();
+
             for (String role : roles) {
-                if (role.equals(roleUser)) {
-                    isAuth = true;
-                    break;
+                if (role.equalsIgnoreCase(roleUser)) {
+                    return null;
                 }
             }
-        } else {
-            isAuth = true;
+            return "Access Denied: Insufficient permissions. " +
+                    "Your current role (" + roleUser + ") does not have access to this section. " +
+                    "Required roles: " + String.join(", ", roles) + ". " +
+                    "Please contact your system administrator if you believe this is an error.";
         }
 
-        return isAuth;
+        return null;
     }
 }

@@ -17,7 +17,7 @@ import jakarta.servlet.http.Part;
 import mg.noobframework.annotation.RequestParam;
 import mg.noobframework.annotation.RequestParamObject;
 import mg.noobframework.annotation.RestApi;
-import mg.noobframework.auth.AuthMethodUtils;
+import mg.noobframework.auth.AuthUtils;
 import mg.noobframework.file.File;
 import mg.noobframework.file.FileUtils;
 import mg.noobframework.modelview.Modelview;
@@ -42,40 +42,42 @@ public class MethodUtils {
     }
 
     public static List<Object> getParamValues(Mapping mapping, HttpServletRequest request, String verb,
-            HashMap<String, String> error)
-            throws Exception {
+            HashMap<String, String> error) throws Exception {
         List<Object> listObject = new ArrayList<>();
         Parameter[] parameters = mapping.getMethodMapping(verb).getParameters();
 
         for (Parameter parameter : parameters) {
             Object obj = null;
-            // check if it's File Class
-            if (File.class.equals(parameter.getType())) {
-                RequestParam requestParam = parameter.getAnnotation(RequestParam.class);
-                if (requestParam != null) {
-                    File file = new File();
-                    Part part = request.getPart(requestParam.value());
-                    file.setByteFromPart(part);
-                    file.setFileName(FileUtils.extractFileName(part));
-                    obj = file;
+            try {
+                // check if it's File Class
+                if (File.class.equals(parameter.getType())) {
+                    RequestParam requestParam = parameter.getAnnotation(RequestParam.class);
+                    if (requestParam != null) {
+                        File file = new File();
+                        Part part = request.getPart(requestParam.value());
+                        file.setByteFromPart(part);
+                        file.setFileName(FileUtils.extractFileName(part));
+                        obj = file;
+                    }
                 }
-            }
-            // check session
-            else if (parameter.getType().equals(Mysession.class)) {
-                obj = new Mysession(request.getSession());
-            } else if (parameter.isAnnotationPresent(RequestParamObject.class)) {
-                obj = ObjectUtils.doSetter(parameter.getType(), request, error);
-            } else if (parameter.isAnnotationPresent(RequestParam.class)) {
-                obj = request.getParameter(parameter.getAnnotation(RequestParam.class).value());
-            } else {
-                throw new Exception("ETU002510: No valid annotation found for the parameter '"
-                        + parameter.getName() + "' of type '" + parameter.getType()
-                        + "' in the function you want to use");
+                // check session
+                else if (parameter.getType().equals(Mysession.class)) {
+                    obj = new Mysession(request.getSession());
+                } else if (parameter.isAnnotationPresent(RequestParamObject.class)) {
+                    obj = ObjectUtils.doSetter(parameter.getType(), request, error);
+                } else if (parameter.isAnnotationPresent(RequestParam.class)) {
+                    String paramValue = request.getParameter(parameter.getAnnotation(RequestParam.class).value());
+                    obj = ObjectUtils.convertValue(paramValue, parameter.getType());
+                } else {
+                    throw new Exception("ETU002510: No valid annotation found for parameter " + parameter.getName());
+                }
+            } catch (Exception e) {
+                throw new IllegalArgumentException("Erreur de conversion pour le paramètre " + parameter.getName() +
+                        ": " + e.getMessage());
             }
             listObject.add(obj);
         }
         return listObject;
-
     }
 
     public static Object executMethod(Mapping mapping, HttpServletRequest request, String verb,
@@ -90,13 +92,39 @@ public class MethodUtils {
     }
 
     public static void doMethod(HttpServletRequest request, HttpServletResponse response, Mapping mapping,
-            PrintWriter pWriter, String verb, AuthMethodUtils authMethod) throws Exception {
+            PrintWriter pWriter, String verb, AuthUtils authMethod) throws Exception {
         HashMap<String, String> error = new HashMap<>();
+
         if (authMethod != null) {
-            if (!authMethod.isAuthenticated(request, mapping, verb)) {
-                throw new Exception("You are not authorized to access this page ");
+            // CHECK AUTHENTICATION
+            String authError = authMethod.isAuthenticated(request, mapping, verb);
+            if (authError != null) {
+                throw new Exception(authError);
             }
         }
+
+        // CHECK VALIDATION
+        List<Object> paramValues = getParamValues(mapping, request, verb, error);
+        if (error.size() > 0) {
+            String url = request.getParameter("url");
+            if (url == null) {
+                url = request.getHeader("Referer");
+                if (url != null) {
+                    url = url.substring(url.indexOf(request.getContextPath()) + request.getContextPath().length());
+                }
+            }
+
+            HttpServletRequest getRequest = new HttpServletRequestWrapper(request) {
+                @Override
+                public String getMethod() {
+                    return "GET";
+                }
+            };
+            request.setAttribute("error", error);
+            Redirecte.redirecting(getRequest, response, url);
+            return;
+        }
+
         Object result = executMethod(mapping, request, verb, error);
 
         if (result instanceof String) {
@@ -105,17 +133,6 @@ public class MethodUtils {
             Modelview modelview = (Modelview) result;
             HashMap<String, Object> data = modelview.getData();
 
-            // CHECK VALIDATION
-            if (error.size() > 0) {
-                HttpServletRequest getRequest = new HttpServletRequestWrapper(request) {
-                    @Override
-                    public String getMethod() {
-                        return "GET";
-                    }
-                };
-                Redirecte.redirecting(getRequest, response, data.get("url").toString());
-                return;
-            }
             if (mapping.getMethodMapping(verb).isAnnotationPresent(RestApi.class)) {
                 pWriter.println(new Gson().toJson(data));
             } else {
