@@ -81,12 +81,11 @@ public class MethodUtils {
     }
 
     public static Object executMethod(Mapping mapping, HttpServletRequest request, String verb,
-            HashMap<String, String> error) throws Exception {
+            HashMap<String, String> error, List<Object> paramValue) throws Exception {
         Class<?> clazz = mapping.getClazzMapping();
         Object obj = clazz.getConstructor().newInstance();
         setSessionAttribut(obj, request);
         Method method = mapping.getMethodMapping(verb);
-        List<Object> paramValue = getParamValues(mapping, request, verb, error);
 
         return method.invoke(obj, paramValue.toArray());
     }
@@ -125,7 +124,7 @@ public class MethodUtils {
             return;
         }
 
-        Object result = executMethod(mapping, request, verb, error);
+        Object result = executMethod(mapping, request, verb, error, paramValues);
 
         if (result instanceof String) {
             pWriter.println(new Gson().toJson(result));
