@@ -29,6 +29,18 @@ public class Validation {
                 error.put(field.getName(), "value must be numeric");
                 return false;
             }
+
+            Numerique num = field.getAnnotation(Numerique.class);
+            double value = Double.parseDouble(paramValue);
+
+            if (value < num.min()) {
+                error.put(field.getName(), "value must be greater than " + num.min());
+                return false;
+            }
+            if (value > num.max()) {
+                error.put(field.getName(), "value must be less than " + num.max());
+                return false;
+            }
         } else if (field.isAnnotationPresent(Date.class)) {
             if (!StringUtils.isDate(paramValue)) {
                 error.put(field.getName(), "value must be date");
