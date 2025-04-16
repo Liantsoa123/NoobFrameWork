@@ -5,6 +5,15 @@ import java.util.HashMap;
 public class Modelview {
     private String url;
     private HashMap<String, Object> data = new HashMap<String, Object>();
+    private boolean isSendRedirect = false;
+
+    public boolean isSendRedirect() {
+        return isSendRedirect;
+    }
+
+    public void setSendRedirect(boolean isSendRedirect) {
+        this.isSendRedirect = isSendRedirect;
+    }
 
     public HashMap<String, Object> getData() {
         return data;
