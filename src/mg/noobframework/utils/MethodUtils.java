@@ -120,7 +120,7 @@ public class MethodUtils {
                 }
             };
             request.setAttribute("error", error);
-            Redirecte.redirecting(getRequest, response, url);
+            Redirecte.redirecting(getRequest, response, url, false);
             return;
         }
 
@@ -138,7 +138,7 @@ public class MethodUtils {
                 for (String key : data.keySet()) {
                     request.setAttribute(key, data.get(key));
                 }
-                Redirecte.redirecting(request, response, modelview.getUrl());
+                Redirecte.redirecting(request, response, modelview.getUrl(), modelview.isSendRedirect());
             }
         } else {
             throw new Exception("unknown value");
