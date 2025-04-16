@@ -5,8 +5,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 public class Redirecte {
-    public static void redirecting(HttpServletRequest request, HttpServletResponse response, String url)
+    public static void redirecting(HttpServletRequest request, HttpServletResponse response, String url,
+            boolean isSendRedirect)
             throws Exception {
+        if (isSendRedirect) {
+            response.sendRedirect(url);
+            return;
+        }
         RequestDispatcher rDispatcher = request.getRequestDispatcher(url);
         rDispatcher.forward(request, response);
     }
